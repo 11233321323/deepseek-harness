@@ -187,7 +187,7 @@ function resolveTimeout(requested: number | undefined, fallback: number): number
 }
 
 function clientArgs(args: SshArgs, destination: string, portFlag: '-p' | '-P'): string[] {
-  const argv = [...SSH_OPTIONS]
+  const argv: string[] = [...SSH_OPTIONS]
   if (args.port !== undefined) argv.push(portFlag, String(assertPort(args.port, 'port')))
   if (args.identityFile !== undefined) argv.push('-i', assertTransferPath(args.identityFile, 'identityFile'))
   argv.push(destination)

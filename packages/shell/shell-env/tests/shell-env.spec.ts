@@ -77,7 +77,7 @@ describe('ShellEnvRegistry', () => {
     expect(registry.collect(execution())).toMatchObject({
       DSH_INSTALL_DIR: '/dsh', DSH_PROFILE: 'web', DSH_PROFILE_DIR: '/profiles/web',
     })
-    for (const key of ['DSH_PROFILE', 'DSH_INSTALL_DIR', 'DSH_NODE_EXECUTABLE']) {
+    for (const key of ['DSH_PROFILE', 'DSH_INSTALL_DIR', 'DSH_NODE_EXECUTABLE'] as const) {
       expect(() => registry.register({
         name: `${key}-claimer`,
         variables: { [key]: { description: 'Reserved key.' } },
@@ -86,14 +86,14 @@ describe('ShellEnvRegistry', () => {
     }
   })
 
-  it('resolves DSH_HOME from the ambient override or the user-home default', () => {
+  it('resolves DSHS_HOME from the ambient override or the user-home default', () => {
     vi.stubEnv('DSHS_HOME', './ambient-dsh-home')
     const fromEnvironment = new ShellEnvRegistry(new Context())
-    expect(fromEnvironment.collect(execution()).DSHS_HOME).toBe(resolve('./ambient-dsh-home'))
+    expect(Reflect.get(fromEnvironment.collect(execution()), 'DSHS_HOME')).toBe(resolve('./ambient-dsh-home'))
 
     vi.stubEnv('DSHS_HOME', undefined)
     const fromDefault = new ShellEnvRegistry(new Context())
-    expect(fromDefault.collect(execution()).DSHS_HOME).toBe(join(homedir(), '.dshs'))
+    expect(Reflect.get(fromDefault.collect(execution()), 'DSHS_HOME')).toBe(join(homedir(), '.dshs'))
   })
 
   it('collects declared contributor variables and omits unavailable values', () => {

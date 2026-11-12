@@ -490,7 +490,7 @@ describe('execution through the bash seam', () => {
     const dshEnv = bash.requests[0]?.dshEnv
     expect(dshEnv).toBeDefined()
     expect(dshEnv?.['DSH_SHELL']).toBe('1')
-    expect(dshEnv?.['DSH_HOME']).toEqual(expect.any(String))
+    expect(Reflect.get(dshEnv ?? {}, 'DSHS_HOME')).toEqual(expect.any(String))
     expect(dshEnv).not.toHaveProperty('DSH_SESSION_ID')
   })
 
