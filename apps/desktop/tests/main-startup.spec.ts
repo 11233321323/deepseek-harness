@@ -184,6 +184,8 @@ const harness = await vi.hoisted(async () => {
     getVersion: () => '1.0.0',
     getAppPath: (): string => 'desktop-test-app',
     setAppLogsPath: vi.fn(),
+    setName: vi.fn((name: string) => { app.name = name }),
+    setPath: vi.fn(),
     getPath: vi.fn<(name: string) => string>(),
     setAboutPanelOptions: vi.fn<(options: Electron.AboutPanelOptionsOptions) => void>(),
     requestSingleInstanceLock: () => true,
@@ -1456,7 +1458,7 @@ describe('desktop main startup', () => {
       const commands = applicationMenuItems().filter(item => item.visible !== false)
       await expect(JSON.stringify(commands, null, 2) + '\n')
         .toMatchFileSnapshot(`./expected/application-menu-${locale}.json`)
-      expect(harness.app.name).toBe('@deepseek-ai/dsh-desktop')
+      expect(harness.app.name).toBe('dshs')
     } finally { harness.app.name = originalName }
   })
 

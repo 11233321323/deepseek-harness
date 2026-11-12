@@ -46,7 +46,7 @@ it('configures MCP on a live profile, restores it on restart, and removes its to
   const start = async () => {
     const child = spawn(process.execPath, [join(repo, 'apps/cli/lib/bin.js'), '--profile', 'web', '--patch', patch,
       '--port', '0', '--no-open'], { cwd: join(root, 'workspace'),
-      env: { ...process.env, DSH_HOME: join(root, 'home'), DSH_AGENTS_HOME: join(root, 'agents'),
+      env: { ...process.env, DSHS_HOME: join(root, 'home'), DSH_AGENTS_HOME: join(root, 'agents'),
         DSH_TELEMETRY_DISABLED: '1', DEEPSEEK_API_KEY: 'keyless-no-model-calls' },
       stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
     })
@@ -60,7 +60,7 @@ it('configures MCP on a live profile, restores it on restart, and removes its to
     for (const stream of [child.stdout, child.stderr]) stream!.on('data', (data) => { output = (output + String(data)).slice(-30_000) })
     await expect.poll(() => {
       if (child.exitCode !== null) throw new Error(output)
-      return output.includes('dsh web: http://')
+      return output.includes('dshs web: http://')
     }, { timeout: 60_000 }).toBe(true)
     return { stop, request: (phase: string): Promise<Observation> => new Promise((resolve, reject) => {
       child.once('message', (value: { result: Observation; error?: string }) => {

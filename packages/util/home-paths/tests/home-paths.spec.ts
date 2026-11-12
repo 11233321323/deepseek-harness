@@ -24,42 +24,47 @@ afterEach(() => {
 })
 
 describe('dsh path helpers', () => {
-  it('owns the shared default DSH home directory name', () => {
-    expect(DSH_HOME_DIR_NAME).toBe('.dsh')
-    expect(DEFAULT_DSH_HOME_DISPLAY).toBe('~/.dsh')
-    expect(defaultDshHome()).toBe(join(homedir(), '.dsh'))
+  it('owns this edition\'s default home directory name', () => {
+    expect(DSH_HOME_DIR_NAME).toBe('.dshs')
+    expect(DEFAULT_DSH_HOME_DISPLAY).toBe('~/.dshs')
+    expect(defaultDshHome()).toBe(join(homedir(), '.dshs'))
   })
 
   it('expands tilde paths without changing non-tilde paths', () => {
     expect(expandHomePath('~')).toBe(homedir())
-    expect(expandHomePath('~/.dsh')).toBe(join(homedir(), '.dsh'))
-    expect(expandHomePath('~\\.dsh')).toBe(join(homedir(), '.dsh'))
-    expect(expandHomePath('/tmp/.dsh')).toBe('/tmp/.dsh')
-    expect(expandHomePath('~other/.dsh')).toBe('~other/.dsh')
+    expect(expandHomePath('~/.dshs')).toBe(join(homedir(), '.dshs'))
+    expect(expandHomePath('~\\.dshs')).toBe(join(homedir(), '.dshs'))
+    expect(expandHomePath('/tmp/.dshs')).toBe('/tmp/.dshs')
+    expect(expandHomePath('~other/.dshs')).toBe('~other/.dshs')
   })
 
-  it('resolves explicit path before DSH_HOME and the default', () => {
+  it('resolves explicit path before DSHS_HOME and the default', () => {
     const envHome = join(homedir(), 'env-dsh')
 
-    expect(resolveDshHome('/tmp/explicit-dsh', { DSH_HOME: '~/env-dsh' })).toBe(resolve('/tmp/explicit-dsh'))
-    expect(resolveDshHome(undefined, { DSH_HOME: '~/env-dsh' })).toBe(envHome)
+    expect(resolveDshHome('/tmp/explicit-dsh', { DSHS_HOME: '~/env-dsh' })).toBe(resolve('/tmp/explicit-dsh'))
+    expect(resolveDshHome(undefined, { DSHS_HOME: '~/env-dsh' })).toBe(envHome)
     expect(resolveDshHome(undefined, {})).toBe(defaultDshHome())
   })
 
-  it('treats an empty or whitespace-only DSH_HOME as unset', () => {
-    expect(resolveDshHome(undefined, { DSH_HOME: '' })).toBe(defaultDshHome())
-    expect(resolveDshHome(undefined, { DSH_HOME: '   ' })).toBe(defaultDshHome())
+  it('ignores DSH_HOME so an official install does not share this home', () => {
+    expect(resolveDshHome(undefined, { DSH_HOME: '/official' })).toBe(defaultDshHome())
+    expect(resolveDshHome(undefined, { DSH_HOME: '/official', DSHS_HOME: '~/special' })).toBe(join(homedir(), 'special'))
   })
 
-  it('joins child segments onto the resolved DSH_HOME', () => {
-    vi.stubEnv('DSH_HOME', '~/env-dsh')
+  it('treats an empty or whitespace-only DSHS_HOME as unset', () => {
+    expect(resolveDshHome(undefined, { DSHS_HOME: '' })).toBe(defaultDshHome())
+    expect(resolveDshHome(undefined, { DSHS_HOME: '   ' })).toBe(defaultDshHome())
+  })
+
+  it('joins child segments onto the resolved DSHS_HOME', () => {
+    vi.stubEnv('DSHS_HOME', '~/env-dsh')
     expect(dshHomePath()).toBe(join(homedir(), 'env-dsh'))
     expect(dshHomePath('storages', 'cache')).toBe(join(homedir(), 'env-dsh', 'storages', 'cache'))
   })
 
   it('labels a resolved home by whether it is the default root', () => {
-    expect(dshHomeDisplay(resolve(defaultDshHome()))).toBe('~/.dsh')
-    expect(dshHomeDisplay('/some/other/root')).toBe('$DSH_HOME')
+    expect(dshHomeDisplay(resolve(defaultDshHome()))).toBe('~/.dshs')
+    expect(dshHomeDisplay('/some/other/root')).toBe('$DSHS_HOME')
   })
 
   it('owns the shared default agents home directory name', () => {
@@ -87,13 +92,13 @@ describe('dsh path helpers', () => {
   })
 
   it.each([
-    [undefined, join(homedir(), '.dsh')],
-    ['', join(homedir(), '.dsh')],
-    ['   ', join(homedir(), '.dsh')],
+    [undefined, join(homedir(), '.dshs')],
+    ['', join(homedir(), '.dshs')],
+    ['   ', join(homedir(), '.dshs')],
     ['~/env-dsh', join(homedir(), 'env-dsh')],
     ['./relative-dsh', resolve('./relative-dsh')],
-  ] as const)('resolves cache paths with DSH_HOME=%j', (home, expectedHome) => {
-    vi.stubEnv('DSH_HOME', home)
+  ] as const)('resolves cache paths with DSHS_HOME=%j', (home, expectedHome) => {
+    vi.stubEnv('DSHS_HOME', home)
     try {
       expect(dshCachePath()).toBe(join(expectedHome, 'cache'))
       expect(dshCachePath('models', 'index.json')).toBe(join(expectedHome, 'cache', 'models', 'index.json'))
@@ -103,7 +108,7 @@ describe('dsh path helpers', () => {
   })
 
   it('resolves configured cache homes before the environment', () => {
-    vi.stubEnv('DSH_HOME', '~/env-dsh')
+    vi.stubEnv('DSHS_HOME', '~/env-dsh')
     try {
       expect(dshCachePath({ dshHome: '~/explicit-dsh' })).toBe(join(homedir(), 'explicit-dsh', 'cache'))
       expect(dshCachePath({ dshHome: './explicit-dsh' }, 'attachments', 'request-images'))

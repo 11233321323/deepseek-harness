@@ -133,7 +133,7 @@ describe('layering and reads', () => {
 
 describe('layer ladder', () => {
   // .credentials.yaml > inherited process env > invoking directory .env >
-  // $DSH_HOME/.env.
+  // $DSHS_HOME/.env.
   async function bootLayered(
     path: string,
     layers: Parameters<typeof createLaunchEnvironmentSnapshot>[0],

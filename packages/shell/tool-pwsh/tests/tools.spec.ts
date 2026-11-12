@@ -463,7 +463,7 @@ describe('execution through the bash seam', () => {
     expect(request?.workdir).toBe('/sessions/s1')
     expect(request?.timeoutMs).toBe(1234)
     expect(request?.dshEnv).toEqual({
-      DSH_HOME: dshHome,
+      DSHS_HOME: dshHome,
       DSH_NODE_EXECUTABLE: process.execPath,
       DSH_SHELL: '1',
       DSH_SESSION_ID: 'session-1',

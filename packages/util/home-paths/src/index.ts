@@ -8,14 +8,22 @@ import { opendir, realpath } from 'node:fs/promises'
 import { homedir } from 'node:os'
 import { basename, dirname, join, resolve } from 'node:path'
 
-/** Directory name for the default DeepSeek Harness home under the OS home. */
-export const DSH_HOME_DIR_NAME = '.dsh'
+/**
+ * Directory name for this edition's home under the OS home.
+ * Official DeepSeek Harness uses `.dsh`; this edition uses `.dshs` so the two installs do not share sessions, credentials, or plugins.
+ */
+export const DSH_HOME_DIR_NAME = '.dshs'
 
-/** Stable user-facing display form for the default DeepSeek Harness home. */
+/** Stable user-facing display form for this edition's default home. */
 export const DEFAULT_DSH_HOME_DISPLAY = `~/${DSH_HOME_DIR_NAME}`
 
-/** Environment variable that overrides the default DeepSeek Harness home. */
-export const DSH_HOME_ENV = 'DSH_HOME'
+/**
+ * Environment variable that overrides this edition's home.
+ * Official DeepSeek Harness reads `DSH_HOME`. This edition reads only
+ * `DSHS_HOME`, so a shell that exports `DSH_HOME` for official `dsh` does not
+ * redirect this process.
+ */
+export const DSH_HOME_ENV = 'DSHS_HOME'
 
 /** Directory name for the default shared agent configuration root under the OS home. */
 export const AGENTS_HOME_DIR_NAME = '.agents'
@@ -124,12 +132,12 @@ function rootDisplay(resolvedRoot: string, defaultRoot: string, defaultLabel: st
 /**
  * Resolve the single-root DeepSeek Harness home.
  *
- * Precedence, highest first: an explicit configured path, `$DSH_HOME`, then
- * `~/.dsh`. The harness keeps all user data under one root. An empty or
- * whitespace-only `$DSH_HOME` is treated as unset, so a blank override never
- * resolves the home to the current working directory.
+ * Precedence, highest first: an explicit configured path, `$DSHS_HOME`, then
+ * `~/.dshs`. The harness keeps all user data under one root. An empty or
+ * whitespace-only `$DSHS_HOME` is treated as unset, so a blank override never
+ * resolves the home to the current working directory. `$DSH_HOME` is not read.
  * @param configured - explicit harness-home override, which has highest precedence.
- * @param env - environment mapping used to read `DSH_HOME`.
+ * @param env - environment mapping used to read `DSHS_HOME`.
  * @returns the normalized absolute harness home path.
  */
 export function resolveDshHome(configured?: string, env: Record<string, string | undefined> = process.env): string {
@@ -176,9 +184,9 @@ export function dshCachePath(optionsOrSegment: { dshHome?: string } | string = {
  * Describe a resolved harness home symbolically for user-facing display.
  *
  * It never returns an absolute machine path: the default home is labelled
- * `~/.dsh`, and any configured home is labelled `$DSH_HOME`.
+ * `~/.dshs`, and any configured home is labelled `$DSHS_HOME`.
  * @param resolvedHome - the absolute path returned by {@link resolveDshHome}.
- * @returns `~/.dsh` for the default home, otherwise `$DSH_HOME`.
+ * @returns `~/.dshs` for the default home, otherwise `$DSHS_HOME`.
  */
 export function dshHomeDisplay(resolvedHome: string): string {
   return rootDisplay(resolvedHome, defaultDshHome(), DEFAULT_DSH_HOME_DISPLAY, DSH_HOME_ENV)

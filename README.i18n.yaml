@@ -8,15 +8,18 @@
 /deepseek-harness/developer-preview:
   en: 4ef4d8a71ac143f0
   zh: 1bfc3149ba8e5543
-/deepseek-harness/run:
-  en: 4e0248e4c6474fc6
-  zh: eb2fb8d78c7d6bc0
-/deepseek-harness/run/run-from-npm:
-  en: e22005cd42e6cbad
-  zh: 0f536f4208df1d60
-/deepseek-harness/run/run-from-source:
-  en: 819e3f7c144d0d64
-  zh: de815f040975dba7
+/deepseek-harness/run-beside-official-dsh:
+  en: 519d0df58b3a85bc
+  zh: ea85c794194ca961
+/deepseek-harness/run-beside-official-dsh/run-from-source:
+  en: 48587f661da6bcf7
+  zh: a6a9f7f5cfc081e2
+/deepseek-harness/run-beside-official-dsh/plugin-marketplace:
+  en: 749a1b75f4196ebd
+  zh: 67d8c445e5ac2d61
+/deepseek-harness/run-beside-official-dsh/ssh-tools:
+  en: 4db6cb4dcec4d65e
+  zh: 5316187eb3eabf95
 /deepseek-harness/community-and-support:
   en: 20acf6451fdc869b
   zh: d06246dd019ecef7

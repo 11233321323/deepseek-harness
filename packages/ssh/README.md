@@ -27,6 +27,7 @@ This family runs files, ordinary processes, terminals and sandbox enforcement on
 | [`fs-ssh`](fs-ssh/README.md) | Remote file identity, reads and guarded atomic mutations | `ctx.fs` |
 | [`subprocess-ssh`](subprocess-ssh/README.md) | Executable lookup, processes, control streams and terminals | `ctx.subprocess` |
 | [`sandbox-ssh`](sandbox-ssh/README.md) | Remote file-effect confinement and enforcement facts | `ctx.sandbox` |
+| [`tool-ssh`](tool-ssh/README.md) | Model-facing OpenSSH commands, sftp copies, and local port forwards | `ssh` tool |
 
 <a id="related-documentation"></a>
 ## Related documentation

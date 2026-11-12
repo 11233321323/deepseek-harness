@@ -16,33 +16,62 @@ DeepSeek Harness 处于 _开发者预览_ 阶段，正在快速迭代。**未来
 
 <a id="run"></a>
 
-## 运行
+## 与官方 dsh 并排运行
 
-### 通过 `npm` 运行
+本仓库是 DeepSeek Harness 的特别版。它可以安装在官方 `dsh` 旁边，而不替换 `dsh` 命令、`~/.dsh` 或端口 `3080`。
 
-安装 `Node.js`，然后运行：
+| | 官方 dsh | 本版本 |
+|---|---|---|
+| 命令 | `dsh` | `dshs` |
+| npm bin | 官方 registry 上 `@deepseek-ai/dsh` 的 `dsh` | 本检出中 `@deepseek-ai/dsh` 包的 `dshs` |
+| 主目录 | `~/.dsh`，或 `$DSH_HOME` | `~/.dshs`，或 `$DSHS_HOME` |
+| Web UI | `http://127.0.0.1:3080` | `http://127.0.0.1:3180` |
+| Desktop 用户数据 | 由官方应用的 Electron 名称决定 | 操作系统应用数据目录下的 `dshs` |
+| Desktop 命令 | `/usr/local/bin/dsh` | `/usr/local/bin/dshs` |
+| URL scheme | `dsh://` | `dshs://` |
 
-```sh
-npx @deepseek-ai/dsh web
-```
+本版本不读取 `$DSH_HOME`。为官方 `dsh` 导出该变量的 shell 不会把本版本指到那个目录。profile、会话、凭据和已安装插件都位于本版本的主目录下。
 
-该命令默认会在 `http://127.0.0.1:3080` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。
+不要把这个包 `npm install -g` 到与官方 `@deepseek-ai/dsh` 相同的前缀。即使新的 bin 名称是 `dshs`，这仍会替换那个包。在检出目录中，`pnpm dshs` 运行本版本，并保留已全局安装的 `dsh`。本检出中的 `pnpm dsh` 是同一进程，不是官方二进制。
 
 <a id="run-from-source"></a>
 
 ### 从源码运行
 
-如需从仓库源码运行：
+安装 Node.js 24.9 或更新版本，然后：
 
 ```sh
-git clone https://github.com/deepseek-ai/deepseek-harness.git
+git clone https://github.com/11233321323/deepseek-harness.git
 cd deepseek-harness
 pnpm install
 pnpm run build
-pnpm dsh web
+pnpm dshs web
 ```
 
-`pnpm run build` 会准备仓库产物。`pnpm dsh web` 会直接使用这些已构建产物，不会重新构建。
+该命令默认会在 `http://127.0.0.1:3180` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。
+
+`pnpm run build` 会准备仓库产物。`pnpm dshs web` 会直接使用这些已构建产物，不会重新构建。
+
+确认两个安装不共享状态：
+
+```sh
+dsh web --no-open
+pnpm dshs web --no-open
+printf '%s\n' "$DSH_HOME" "$DSHS_HOME"
+ls -d ~/.dsh ~/.dshs
+```
+
+未设置 `DSH_HOME` 时，官方 `dsh web --no-open` 打印端口 3080 上的 URL，并使用 `~/.dsh`。`pnpm dshs web --no-open` 打印 `dshs web: http://127.0.0.1:3180/...`。
+
+官方 `dsh` 继续使用 `~/.dsh`。本版本创建 `~/.dshs`，并且不写入 `~/.dsh`。
+
+### 插件市场
+
+全新的 web 或 desktop profile 包含**插件 → 发现**。默认索引是公开的社区目录 `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json`（与 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 发布的文档相同，并在 [dshmarket.com](https://dshmarket.com/) 说明）。它不是 DeepSeek 官方注册表。在那里浏览和搜索，然后通过确认对话框安装或移除组合包。索引中的内容在你安装之前不会运行，安装仍遵循 profile 的插件管理器和审批规则。在发现页的索引源中删除该 URL，即可停止使用这个目录。
+
+### SSH 工具
+
+standard、ptc 和 cordis 预设以及 headless profile 包含 `ssh` 工具。它使用本机 OpenSSH 客户端和你已有的密钥或 agent。它可以运行远端命令、列出目录、上传或下载文件，并用 `forward` / `forward_stop` 打开本地端口转发。它不询问密码。主机必须已经在 `known_hosts` 中。除非会话已经处于完全访问模式，每次调用都需要审批。不要把私钥或密码粘贴到对话中。
 
 ## 社区与支持
 

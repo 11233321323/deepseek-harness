@@ -43,7 +43,7 @@ describe('runProfile with an application-owned profile', () => {
     mkdirSync(join(home, 'runtime'))
     writeFileSync(join(home, 'runtime/package.json'), '{"name":"test-runtime","version":"1.0.0"}')
     writeFileSync(join(home, 'package.json'), '{"name":"test-bundle","version":"1.0.0"}')
-    vi.stubEnv('DSH_HOME', home)
+    vi.stubEnv('DSHS_HOME', home)
     vi.spyOn(process, 'on').mockReturnValue(process)
     const ctx = new Context()
     ctx.provide('loader', { create: vi.fn() })
@@ -100,7 +100,7 @@ describe('runProfile with an application-owned profile', () => {
     const localManifest = '{"name":"test-local","version":"1.0.0","exports":"./index.cjs"}'
     writeFileSync(join(localPackageDir, 'package.json'), localManifest)
     writeFileSync(join(localPackageDir, 'index.cjs'), 'module.exports = "profile"\n')
-    vi.stubEnv('DSH_HOME', home)
+    vi.stubEnv('DSHS_HOME', home)
     vi.stubEnv('DSH_TELEMETRY_DISABLED', '1')
     vi.spyOn(process, 'on').mockReturnValue(process)
     const oldExitCode = process.exitCode
@@ -193,7 +193,7 @@ describe('profile User-Agent suffix', () => {
     mkdirSync(join(home, 'runtime'))
     writeFileSync(join(home, 'runtime/package.json'), '{"name":"test-runtime","version":"1.0.0"}')
     writeFileSync(join(home, 'package.json'), '{"name":"test-bundle","version":"1.0.0"}')
-    vi.stubEnv('DSH_HOME', home)
+    vi.stubEnv('DSHS_HOME', home)
     vi.spyOn(process, 'on').mockReturnValue(process)
     vi.mocked(installProxyFromEnvironment).mockResolvedValue(async () => {})
     const failure = new Error('stop after observing the environment')

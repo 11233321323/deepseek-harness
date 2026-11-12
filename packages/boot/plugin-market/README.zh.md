@@ -24,7 +24,7 @@ kind: "package-reference"
 <a id="use-this-package"></a>
 ## 使用本包
 
-可选的[自定义插件索引组合包](../../experimental/plugin-market-bundle/README.zh.md)把该服务挂载为 `plugin-market` 行；随附的 profile 默认不启用该组合包。与 `plugin-manager` 一样，该行在没有 profile 时被禁用，并等待 `pluginManager`。默认不配置任何索引源，因此在用户添加索引源之前，Host 不发送任何索引请求。
+web-app 组合包把该服务挂载为 `plugin-market` 行，并把 `indexes` 设为 `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json`，这是一个第三方社区目录。与 `plugin-manager` 一样，该行在没有 profile 时被禁用，并等待 `pluginManager`。在发现页或 `plugin_market` 读取索引之前，Host 不会去获取索引。安装列出的组合包仍然经过 `pluginManager` 及其确认。
 
 | 配置 | 默认值 | 含义 |
 |---|---|---|

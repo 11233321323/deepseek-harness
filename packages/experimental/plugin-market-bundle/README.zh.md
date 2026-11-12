@@ -9,7 +9,7 @@ kind: "package-bundle"
 
 ## 概述
 
-此可选组合包（bundle）挂载自定义插件索引：Host 的 [`pluginMarket`](../../boot/plugin-market/README.zh.md) 服务读取用户添加的插件索引，Web 端提供插件页的[发现标签页](../../client/ui-plugin-market/README.zh.md)。随包配置默认禁用。
+此可选组合包不再插入插件行。Web 与 Desktop profile 自行挂载 Host 的 [`pluginMarket`](../../boot/plugin-market/README.zh.md) 服务和 Web 的[发现标签页](../../client/ui-plugin-market/README.zh.md)，并带有一个默认的社区索引。启用此组合包不会再插入这些行的第二份副本。
 
 ## 目录
 
@@ -24,7 +24,7 @@ kind: "package-bundle"
 <a id="use-this-package"></a>
 ## 使用此包
 
-打开 Web 侧栏中的**插件**，在**实验性插件**下启用**自定义插件索引**。页面随后显示**已安装**和**发现**两个标签页；**发现**用于添加索引源并安装其中的组合包。禁用此组合包会移除发现标签页和 `plugin_market` 工具；已保存的索引源保留在 profile 中。
+打开 Web 侧栏中的**插件**。全新的 web 或 desktop profile 已经带有**发现**。它列出默认的社区索引，并且只有在确认之后才会安装选中的组合包。打开或关闭此组合包不会添加或移除该标签页。
 
 -----
 
@@ -34,7 +34,7 @@ kind: "package-bundle"
 <details>
 <summary>维护者信息 — 点击展开</summary>
 
-静态 `cordis.patch.yml` 插入 `plugin-market` 服务行和 `ui-plugin-market` 浏览器行；与 `plugin-manager` 一样，服务行在没有 profile 时被禁用。Creator 预设保留其 `tool-plugin-market` 行；该插件只在 `pluginMarket` 已挂载时注册 `plugin_market`，因此没有此组合包时，该行既不等待，也不显示该工具。插件页只在存在 `plugins.tab` 条目时显示标签页，因此无需了解此组合包。
+静态 `cordis.patch.yml` 是空的补丁列表。web-app 组合包插入 `plugin-market` 服务行和 `ui-plugin-market` 浏览器行，并在配置中写明默认索引 URL。Creator 预设保留其 `tool-plugin-market` 行；该插件只在 `pluginMarket` 已挂载时注册 `plugin_market`。
 
 </details>
 
@@ -43,17 +43,17 @@ kind: "package-bundle"
 <a id="model-experience"></a>
 ## 模型体验
 
-该包通过 `pluginMarket` 服务间接影响模型：启用此组合包后，Creator 预设获得只读的 `plugin_market` 工具，其说明见 [`dsh-plugin-market`](../../boot/plugin-market/README.zh.md#model-experience)。
+Web profile 会挂载 `pluginMarket`，因此无论是否启用此组合包，Creator 会话都包含只读的 `plugin_market` 工具，其说明见 [`dsh-plugin-market`](../../boot/plugin-market/README.zh.md#model-experience)。
 
 #### KV Cache 影响
 
-启用或禁用此组合包会在 Creator 会话中增加或移除一个工具 schema，从而改变后续请求的缓存请求前缀。
+启用或禁用这个空组合包不会改变该工具 schema。Web profile 挂载 `pluginMarket` 时，Creator 会话的请求前缀已经包含它。
 
 ## 已知限制与后续工作
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- 目前没有官方插件索引；发现标签页只列出用户添加的索引源。
+- 默认索引是第三方社区目录，不是 DeepSeek 官方注册表。发现页在用户确认之前不会安装任何内容。
 
 -----
 

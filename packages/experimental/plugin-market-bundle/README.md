@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-This optional bundle mounts custom plugin indexes: the Host [`pluginMarket`](../../boot/plugin-market/README.md) service, which reads the plugin indexes the user adds, and the Web [Discover tab](../../client/ui-plugin-market/README.md) of the Plugins page. Shipped profiles leave it disabled.
+This optional bundle no longer inserts plugin rows. The web and desktop profiles mount the Host [`pluginMarket`](../../boot/plugin-market/README.md) service and the Web [Discover tab](../../client/ui-plugin-market/README.md) themselves, with a default community index. Enabling this bundle adds no second copy of those rows.
 
 ## Table of Contents
 
@@ -24,7 +24,7 @@ This optional bundle mounts custom plugin indexes: the Host [`pluginMarket`](../
 <a id="use-this-package"></a>
 ## Use this package
 
-Open **Plugins** in the Web sidebar and switch on **Custom plugin indexes** under **Experimental plugins**. The page then shows the **Installed** and **Discover** tabs; **Discover** adds index sources and installs their bundles. Switching the bundle off removes the Discover tab and the `plugin_market` tool; the saved index sources stay in the profile.
+Open **Plugins** in the Web sidebar. **Discover** is already present on a fresh web or desktop profile. It lists the default community index and installs a chosen bundle only after confirmation. Switching this bundle on or off does not add or remove that tab.
 
 -----
 
@@ -34,7 +34,7 @@ Open **Plugins** in the Web sidebar and switch on **Custom plugin indexes** unde
 <details>
 <summary>Maintainer details — click to expand</summary>
 
-The static `cordis.patch.yml` inserts the `plugin-market` service row, disabled without a profile like `plugin-manager`, and the `ui-plugin-market` browser row. The Creator preset keeps its `tool-plugin-market` row; that plugin registers `plugin_market` only while `pluginMarket` is mounted, so the row neither waits nor shows the tool without this bundle. The Plugins page shows its tabs only when a `plugins.tab` entry exists, so it needs no knowledge of this bundle.
+The static `cordis.patch.yml` is an empty patch list. The web-app bundle inserts the `plugin-market` service row and the `ui-plugin-market` browser row, and its config names the default index URL. The Creator preset keeps its `tool-plugin-market` row; that plugin registers `plugin_market` only while `pluginMarket` is mounted.
 
 </details>
 
@@ -47,13 +47,13 @@ Indirectly, through the `pluginMarket` service: with the bundle switched on, the
 
 #### KV Cache effect
 
-Switching the bundle on or off adds or removes one tool schema in Creator sessions, which changes the cached request prefix of later requests.
+The web profile mounts `pluginMarket`, so Creator sessions include the `plugin_market` tool whether or not this bundle is enabled. Enabling or disabling this empty bundle does not change that schema.
 
 ## Known Limitations and Deferred Work
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- There is no official index; Discover lists only the index sources the user adds.
+- The default index is a third-party community catalog, not an official DeepSeek registry. Discover still installs nothing until the user confirms.
 
 -----
 

@@ -58,7 +58,7 @@ interface WebOptions {
  */
 function webCommand(): Command {
   return new Command()
-    .name('dsh --profile web')
+    .name('dshs --profile web')
     .description('Serve the DeepSeek Harness browser UI.')
     .helpOption('-h, --help', 'show this help')
     .option('--host <host>', 'bind address: one concrete IPv4 or IPv6 literal of a local interface; wildcard addresses are rejected')
@@ -70,13 +70,13 @@ function webCommand(): Command {
     .option('--tls-key <file>', 'unencrypted PEM private key; requires --tls-cert')
     .addHelpText('after', `
 Examples:
-  dsh --profile web                          serve on the composed host and port
-  dsh --profile web --no-open                serve without opening a browser
-  dsh --profile web --port 8080              serve on another port
-  dsh --profile web --host 10.0.0.7          bind one local interface address
-  dsh --profile web --public-url https://app.example/ui/ --trusted-host app.example
+  dshs --profile web                          serve on the composed host and port
+  dshs --profile web --no-open                serve without opening a browser
+  dshs --profile web --port 8080              serve on another port
+  dshs --profile web --host 10.0.0.7          bind one local interface address
+  dshs --profile web --public-url https://app.example/ui/ --trusted-host app.example
                                              advertise a prefix-stripping HTTPS proxy entry and admit its authority
-  dsh --profile web --tls-cert ./server-chain.pem --tls-key ./server-key.pem
+  dshs --profile web --tls-cert ./server-chain.pem --tls-key ./server-key.pem
                                              serve HTTPS with an existing certificate and key
 `)
 }

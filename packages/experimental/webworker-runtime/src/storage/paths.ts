@@ -7,7 +7,7 @@
 /** Virtual filesystem root; `process.cwd()` and every absolute path start here. */
 export const DSH_ROOT = '/dsh'
 
-/** `$DSH_HOME`: durable-state directory inside the image. */
+/** `$DSHS_HOME`: durable-state directory inside the image. */
 export const DSH_HOME = `${DSH_ROOT}/home`
 
 /** Flat, symlink-free package tree resolved by the worker module loader. */

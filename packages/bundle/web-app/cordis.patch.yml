@@ -185,7 +185,7 @@
       inject: [webStartup]
       config:
         host: !!js ctx.webStartup.host ?? '127.0.0.1'
-        port: !!js ctx.webStartup.port ?? 3080
+        port: !!js ctx.webStartup.port ?? 3180
         tls: !!js ctx.webStartup.tls
         compression: gzip
         compressionLevel: 1
@@ -340,6 +340,18 @@
     # Without a profile-backed Host it reports itself unavailable.
     - id: ui-plugin-manager
       name: '@deepseek-ai/dsh-client-ui-plugin-manager'
+
+    # Discover is part of this edition's web and desktop profiles. The index is
+    # the public community catalog; installation still confirms through plugin
+    # management and does not run a bundle until the user installs it.
+    - id: plugin-market
+      name: '@deepseek-ai/dsh-plugin-market'
+      disabled: !!js "!ctx.get('profileContext')"
+      config:
+        indexes:
+          - https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json
+    - id: ui-plugin-market
+      name: '@deepseek-ai/dsh-client-ui-plugin-market'
 
     # Read-only Plugin list tab in the Settings Plugins section; the built-in
     # bundles the sidebar page leaves out are inspected here.

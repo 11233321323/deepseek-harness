@@ -51,6 +51,7 @@ import * as SkillFileSystem from '@deepseek-ai/dsh-skill-filesystem'
 import LocalJobRegistry from '@deepseek-ai/dsh-jobs-local'
 import * as ToolAskUser from '@deepseek-ai/dsh-tool-ask-user'
 import * as ToolBash from '@deepseek-ai/dsh-tool-bash'
+import * as ToolSsh from '@deepseek-ai/dsh-tool-ssh'
 import * as ToolPwsh from '@deepseek-ai/dsh-tool-pwsh'
 import * as ToolBashPersistent from '@deepseek-ai/dsh-tool-bash-persistent'
 import * as ToolPwshPersistent from '@deepseek-ai/dsh-tool-pwsh-persistent'
@@ -569,6 +570,19 @@ const TOOL_PACKAGES: ToolPackage[] = [
       })
       await ctx.plugin(ToolSkill)
     },
+  },
+  {
+    pkg: '@deepseek-ai/dsh-tool-ssh',
+    dir: 'tool-ssh',
+    source: 'packages/ssh/tool-ssh/src/index.ts',
+    requires: ['ctx.tools', 'ctx.sandboxPolicy', 'ctx.systemPrompt'],
+    writes: ['tool/call', 'tool/result'],
+    async mount(ctx) {
+      await ctx.plugin(SandboxPolicy, { mode: 'workspace-write' })
+      await ctx.plugin(ToolSsh)
+    },
+    note:
+      'Every action asks for danger-full-access through the approval service unless the session is already there. The local OpenSSH client uses existing keys and the agent; passwords and private-key text are rejected. The web standard, ptc, and cordis presets and the headless profile mount this tool.',
   },
   {
     pkg: '@deepseek-ai/dsh-tool-session-query',

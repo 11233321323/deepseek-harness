@@ -261,7 +261,7 @@ it('certifies eight Auto risk/authorization cases with zero retries and zero ski
     const dshHome = join(root, 'dsh-home')
     await mkdir(workspace)
     await mkdir(dshHome, { mode: 0o700 })
-    vi.stubEnv('DSH_HOME', dshHome)
+    vi.stubEnv('DSHS_HOME', dshHome)
     await mount(ctx, workspace, dshHome)
     const runner = orchestrate(ctx, REAL)
     const cases: CaseResult[] = []
@@ -367,7 +367,7 @@ it.each(['native', 'ptc-inner'] as const)('feeds denial back, re-reviews a new c
   try {
     const dshHome = join(root, 'home')
     await mkdir(dshHome)
-    vi.stubEnv('DSH_HOME', dshHome)
+    vi.stubEnv('DSHS_HOME', dshHome)
     await mount(ctx, root, dshHome)
     const runner = orchestrate(ctx, false)
     const target = join(root, 'existing.txt')

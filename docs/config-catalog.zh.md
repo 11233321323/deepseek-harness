@@ -418,7 +418,7 @@ export interface SearchLimits {
 ```ts config-catalog
 /** Local attachment backend configuration. */
 export interface Config {
-  /** Explicit harness home; omitted follows `DSH_HOME`, then `~/.dsh`. */
+  /** Explicit harness home; omitted follows `DSHS_HOME`, then `~/.dshs`. */
   dshHome?: string
   /** Maximum encoded bytes accepted for one submitted image. Default: 50 MiB. */
   maxImageBytes?: number
@@ -878,7 +878,7 @@ export interface Config {
 export interface Config {
   /** Credentials document path; defaults to `.credentials.yaml` under the harness home. */
   path?: string
-  /** Harness home used when `path` is omitted; defaults to `$DSH_HOME` or `~/.dsh`. */
+  /** Harness home used when `path` is omitted; defaults to `$DSHS_HOME` or `~/.dshs`. */
   dshHome?: string
   /** Watch the document and hot-publish external edits; defaults to true. */
   watch?: boolean
@@ -3458,7 +3458,7 @@ export interface Config extends SessionTitleLlmConfig {
 ```ts config-catalog
 /** Plugin config (all optional — the built-in facts resolve without defaults). */
 export interface Config {
-  /** DeepSeek Harness home directory exposed as `DSH_HOME`; defaults to `$DSH_HOME` or `~/.dsh`. */
+  /** DeepSeek Harness home directory exposed as `DSHS_HOME`; defaults to `$DSHS_HOME` or `~/.dshs`. */
   dshHome?: string
 }
 ```
@@ -3495,7 +3495,7 @@ export interface Config {
   providerName?: string
   /** Whether project and user roots are included around custom roots. */
   includeDefaultRoots?: boolean
-  /** DeepSeek Harness config root. Defaults to `$DSH_HOME` or `~/.dsh`. */
+  /** DeepSeek Harness config root. Defaults to `$DSHS_HOME` or `~/.dshs`. */
   dshHome?: string
   /** Shared agent config root. Defaults to `$DSH_AGENTS_HOME` or `~/.agents`. */
   agentsHome?: string
@@ -4544,6 +4544,29 @@ export interface Config {
 }
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-skill -->
+
+<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-ssh -->
+<a id="deepseek-aidsh-tool-ssh"></a>
+
+## `@deepseek-ai/dsh-tool-ssh`
+
+- `inject`: `tools` · `sandboxPolicy`
+- `source`: [`packages/ssh/tool-ssh/src/index.ts:31`](../packages/ssh/tool-ssh/src/index.ts)
+
+```ts config-catalog
+/** Local OpenSSH client locations and output bounds. */
+export interface Config {
+  /** `ssh` executable. Default: `ssh` on `PATH`. */
+  sshPath?: string
+  /** `sftp` executable. Default: `sftp` on `PATH`. */
+  sftpPath?: string
+  /** Deadline for one command or transfer, in milliseconds. */
+  timeoutMs?: number
+  /** Maximum retained bytes of each output stream. */
+  maxOutputBytes?: number
+}
+```
+<!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-ssh -->
 
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-str-replace-editor -->
 <a id="deepseek-aidsh-tool-str-replace-editor"></a>

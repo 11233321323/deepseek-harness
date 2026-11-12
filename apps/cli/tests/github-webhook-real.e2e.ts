@@ -95,7 +95,7 @@ function observeProcess(child: ChildProcess): ProcessObservation {
   timer.unref()
   const append = (chunk: Buffer | string): void => {
     output = `${output}${String(chunk)}`.slice(-100_000)
-    const match = /dsh web: (http:\/\/[^\s]+)/u.exec(output)
+    const match = /dshs web: (http:\/\/[^\s]+)/u.exec(output)
     if (settled || match?.[1] === undefined) return
     settled = true
     clearTimeout(timer)
@@ -388,7 +388,7 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY)('GitHub webhook through the real 
         DSH_GITHUB_E2E_WORKSPACE: workspacePath,
         DSH_GITHUB_WEBHOOK_PORT: String(webhookPort),
         DSH_GITHUB_WEBHOOK_SECRET: SECRET,
-        DSH_HOME: join(root, '.dsh'),
+        DSHS_HOME: join(root, '.dsh'),
         DSH_TELEMETRY_DISABLED: '1',
       },
       stdio: ['ignore', 'pipe', 'pipe'],

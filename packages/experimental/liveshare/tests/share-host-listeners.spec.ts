@@ -164,7 +164,7 @@ describe('configuration guards', () => {
   it('derives its default owner state file from DSH_HOME', async () => {
     const root = mkdtempSync(join(tmpdir(), 'liveshare-dsh-home-'))
     roots.push(root)
-    vi.stubEnv('DSH_HOME', root)
+    vi.stubEnv('DSHS_HOME', root)
     vi.stubEnv('LIVESHARE_OWNER_STATE_FILE', '')
     vi.stubEnv('LIVESHARE_OWNER_CREDENTIAL_FILE', '')
     const mounted = await mount({ useDshHome: true })
@@ -176,7 +176,7 @@ describe('configuration guards', () => {
     const root = mkdtempSync(join(tmpdir(), 'liveshare-home-'))
     roots.push(root)
     vi.stubEnv('HOME', root)
-    vi.stubEnv('DSH_HOME', '')
+    vi.stubEnv('DSHS_HOME', '')
     vi.stubEnv('LIVESHARE_OWNER_STATE_FILE', '')
     vi.stubEnv('LIVESHARE_OWNER_CREDENTIAL_FILE', '')
     const mounted = await mount({ useDshHome: true })

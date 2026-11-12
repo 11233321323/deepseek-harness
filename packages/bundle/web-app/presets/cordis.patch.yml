@@ -27,6 +27,8 @@
           - id: tool-pwsh
             name: '@deepseek-ai/dsh-tool-pwsh'
             disabled: !!js process.platform !== 'win32'
+          - id: tool-ssh
+            name: '@deepseek-ai/dsh-tool-ssh'
           - id: tool-fs
             name: '@deepseek-ai/dsh-tool-fs'
             config:

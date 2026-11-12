@@ -80,6 +80,7 @@ describe('SubprocessRuntime seam', () => {
 
   it('scrubbedParentEnv drops credential-shaped and DSH_ names (case-insensitively) but keeps PATH', () => {
     process.env.DSH_SCRUB_PROBE = 'stale'
+    process.env.DSHS_HOME = '/must-not-leak'
     process.env.dsh_scrub_probe_lower = 'stale'
     process.env.SCRUB_PROBE_TOKEN = 'secret'
     process.env.SCRUB_PROBE_PASSWORD = 'secret'
@@ -87,6 +88,7 @@ describe('SubprocessRuntime seam', () => {
     try {
       const env = scrubbedParentEnv()
       expect(env.DSH_SCRUB_PROBE).toBeUndefined()
+      expect(env.DSHS_HOME).toBeUndefined()
       expect(env.dsh_scrub_probe_lower).toBeUndefined()
       expect(env.SCRUB_PROBE_TOKEN).toBeUndefined()
       expect(env.SCRUB_PROBE_PASSWORD).toBeUndefined()
@@ -94,6 +96,7 @@ describe('SubprocessRuntime seam', () => {
       expect(env.PATH).toBeDefined()
     } finally {
       delete process.env.DSH_SCRUB_PROBE
+      delete process.env.DSHS_HOME
       delete process.env.dsh_scrub_probe_lower
       delete process.env.SCRUB_PROBE_TOKEN
       delete process.env.SCRUB_PROBE_PASSWORD

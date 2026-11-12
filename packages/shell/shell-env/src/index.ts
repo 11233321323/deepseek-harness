@@ -32,7 +32,7 @@ export const inject: string[] = []
 
 /** Plugin config (all optional — the built-in facts resolve without defaults). */
 export interface Config {
-  /** DeepSeek Harness home directory exposed as `DSH_HOME`; defaults to `$DSH_HOME` or `~/.dsh`. */
+  /** DeepSeek Harness home directory exposed as `DSHS_HOME`; defaults to `$DSHS_HOME` or `~/.dshs`. */
   dshHome?: string
 }
 
@@ -130,12 +130,12 @@ export class ShellEnvRegistry extends Service {
 
       const variables = Object.entries(contributor.variables) as [DshEnvironmentKey, BashEnvVariable][]
       for (const [key, variable] of variables) {
+        if (RESERVED_BASH_ENV_KEYS.has(key)) {
+          throw new Error(`bash env contributor "${contributor.name}" cannot own reserved key "${key}"`)
+        }
         if (!key.startsWith(DSH_ENV_PREFIX)
           || !BASH_ENV_KEY_SUFFIX.test(key.slice(DSH_ENV_PREFIX.length))) {
           throw new Error(`bash env contributor "${contributor.name}" declared invalid key "${key}"`)
-        }
-        if (RESERVED_BASH_ENV_KEYS.has(key)) {
-          throw new Error(`bash env contributor "${contributor.name}" cannot own reserved key "${key}"`)
         }
         if (variable.description.trim().length === 0) {
           throw new Error(`bash env contributor "${contributor.name}" must describe "${key}"`)

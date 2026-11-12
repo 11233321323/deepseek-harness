@@ -37,7 +37,7 @@ function resolveChildLaunch(dshHome: string) {
     env: {
       ...process.env.DEEPSEEK_API_KEY !== undefined ? { DEEPSEEK_API_KEY: process.env.DEEPSEEK_API_KEY } : {},
       ...process.env.DEEPSEEK_BASE_URL !== undefined ? { DEEPSEEK_BASE_URL: process.env.DEEPSEEK_BASE_URL } : {},
-      DSH_HOME: dshHome,
+      DSHS_HOME: dshHome,
       DSH_PERMISSION_MODE: 'danger-full-access',
     },
   })

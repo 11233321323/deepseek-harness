@@ -27,6 +27,7 @@ kind: "package-group"
 | [`fs-ssh`](fs-ssh/README.zh.md) | 远端文件身份、读取及带保护的原子修改 | `ctx.fs` |
 | [`subprocess-ssh`](subprocess-ssh/README.zh.md) | 可执行文件查找、进程、控制流及终端 | `ctx.subprocess` |
 | [`sandbox-ssh`](sandbox-ssh/README.zh.md) | 远端文件效果限制及执行信息 | `ctx.sandbox` |
+| [`tool-ssh`](tool-ssh/README.zh.md) | 面向模型的 OpenSSH 命令、sftp 拷贝与本地端口转发 | `ssh` 工具 |
 
 <a id="related-documentation"></a>
 ## 相关文档
