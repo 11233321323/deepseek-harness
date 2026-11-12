@@ -69,9 +69,11 @@ ls -d ~/.dsh ~/.dshs
 
 全新的 web 或 desktop profile 包含**插件 → 发现**。默认索引是公开的社区目录 `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json`（与 [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 发布的文档相同，并在 [dshmarket.com](https://dshmarket.com/) 说明）。它不是 DeepSeek 官方注册表。在那里浏览和搜索，然后通过确认对话框安装或移除组合包。索引中的内容在你安装之前不会运行，安装仍遵循 profile 的插件管理器和审批规则。在发现页的索引源中删除该 URL，即可停止使用这个目录。
 
-### SSH 工具
+### SSH 支持
 
-standard、ptc 和 cordis 预设以及 headless profile 包含 `ssh` 工具。它使用本机 OpenSSH 客户端和你已有的密钥或 agent。它可以运行远端命令、列出目录、上传或下载文件，并用 `forward` / `forward_stop` 打开本地端口转发。它不询问密码。主机必须已经在 `known_hosts` 中。除非会话已经处于完全访问模式，每次调用都需要审批。不要把私钥或密码粘贴到对话中。
+本版本不附带自定义 SSH 工具。要让 agent 使用 SSH，请安装社区目录中的 [`@lemoncat7/dsh-ssh`](https://awesome-dsh-plugin.com/p/lemoncat7/dsh-ssh/)（MIT）。它提供主机管理、浏览器终端、SFTP、端口转发与代理，以及会话级 AI SSH 访问。
+
+在 Web UI 中打开**插件 → 发现**，选择 `@lemoncat7/dsh-ssh`，并确认正常的插件安装流程。在 shell 中可运行 `dshs plugin --profile web add @lemoncat7/dsh-ssh@latest`。社区目录由第三方维护；安装仍会执行插件管理器的确认、兼容性与审批规则。
 
 ## 社区与支持
 

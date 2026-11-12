@@ -14,6 +14,8 @@ DeepSeek Harness is in _developer preview_ and iterating rapidly. **THERE WILL B
 
 Review the [safety notice](SAFETY.md) before running the project.
 
+<a id="run"></a>
+
 ## Run beside official dsh
 
 This repository is a special edition of DeepSeek Harness. It is meant to be installed next to official `dsh` without replacing the `dsh` command, `~/.dsh`, or port `3080`.
@@ -65,9 +67,11 @@ Official `dsh` keeps using `~/.dsh`. This edition creates `~/.dshs` and does not
 
 A fresh web or desktop profile includes **Plugins → Discover**. The default index is the public community catalog `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json` (the same document published by [awesome-dsh-plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) and described at [dshmarket.com](https://dshmarket.com/)). It is not an official DeepSeek registry. Browse and search there, then install or remove a bundle from the confirmation dialog. Nothing from the index runs until you install it, and install still follows the profile's plugin manager and approval rules. Remove the URL under Discover's index sources to stop using that catalog.
 
-### SSH tools
+### SSH support
 
-The standard, ptc, and cordis presets, and the headless profile, include an `ssh` tool. It uses the local OpenSSH client and your existing keys or agent. It can run a remote command, list a directory, upload or download a file, and open a local port forward with `forward` / `forward_stop`. It does not ask for a password. Hosts must already be in `known_hosts`. Each call needs approval unless the session is already in full-access mode. Do not paste private keys or passwords into the chat.
+This edition does not ship a custom SSH tool. For SSH from the agent, install the community catalog plugin [`@lemoncat7/dsh-ssh`](https://awesome-dsh-plugin.com/p/lemoncat7/dsh-ssh/) (MIT). It provides host management, browser terminals, SFTP, port forwarding and proxies, and session-scoped AI SSH access.
+
+In the Web UI, open **Plugins → Discover**, select `@lemoncat7/dsh-ssh`, and confirm the normal plugin installation. From a shell, use `dshs plugin --profile web add @lemoncat7/dsh-ssh@latest`. The catalog is third party; installation still applies the plugin manager's confirmation, compatibility, and approval rules.
 
 ## Community and support
 

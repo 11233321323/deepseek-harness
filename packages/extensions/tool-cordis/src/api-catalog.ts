@@ -6079,7 +6079,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'BashEnvContributor',
-    declaration: 'export interface BashEnvContributor {\n    name: string;\n    variables: Readonly<Record<DshEnvironmentKey, BashEnvVariable>>;\n    resolve(execution: ToolExecution): Readonly<Partial<Record<DshEnvironmentKey, string>>>;\n}',
+    declaration: 'export interface BashEnvContributor {\n    name: string;\n    variables: Readonly<Partial<Record<ManagedEnvKey, BashEnvVariable>>>;\n    resolve(execution: ToolExecution): Readonly<Partial<Record<ManagedEnvKey, string>>>;\n}',
   },
   {
     name: 'BashEnvVariable',

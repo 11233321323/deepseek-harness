@@ -6,7 +6,7 @@
   en: f68c4f080ce55ff2
   zh: 88a76d7f7f0b260e
 /deepseek-harness/developer-preview:
-  en: 4ef4d8a71ac143f0
+  en: 1990ad7a69963f1f
   zh: 1bfc3149ba8e5543
 /deepseek-harness/run-beside-official-dsh:
   en: 519d0df58b3a85bc
@@ -17,9 +17,9 @@
 /deepseek-harness/run-beside-official-dsh/plugin-marketplace:
   en: 749a1b75f4196ebd
   zh: 67d8c445e5ac2d61
-/deepseek-harness/run-beside-official-dsh/ssh-tools:
-  en: 4db6cb4dcec4d65e
-  zh: 5316187eb3eabf95
+/deepseek-harness/run-beside-official-dsh/ssh-support:
+  en: e6a64b2a647d1dd7
+  zh: 0aa8b30b5daeb129
 /deepseek-harness/community-and-support:
   en: 20acf6451fdc869b
   zh: d06246dd019ecef7

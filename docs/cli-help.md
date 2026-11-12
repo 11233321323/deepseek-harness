@@ -23,19 +23,19 @@ Run `pnpm run gen-cli-help` to regenerate; run `pnpm run verify-cli-help` to che
 Invocations: `dsh --help`
 
 ```text
-Usage: dsh [--profile] <name> [options] [app-args...]
-       dsh plugin --profile <name> <pnpm-args...>
+Usage: dshs [--profile] <name> [options] [app-args...]
+       dshs plugin --profile <name> <pnpm-args...>
 
-dsh: boot a DeepSeek Harness profile — an ordered stack of plugin-bundle patch
-layers under your own overrides.
+dshs: boot a DeepSeek Harness special-edition profile — an ordered stack of
+plugin-bundle patch layers under your own overrides.
 
 Arguments:
   args                           arguments for the booted profile's app (see:
-                                 dsh --profile <name> --help)
+                                 dshs --profile <name> --help)
 
 Options:
   -V, --version                  output the version number
-  --profile <name>               the profile under $DSH_HOME/profiles to boot
+  --profile <name>               the profile under $DSHS_HOME/profiles to boot
   --from-default-profile <name>  replace a custom profile with a fresh copy of a
                                  shipped profile template
   --patch <path>                 extra patch-list overlay applied after the
@@ -47,14 +47,14 @@ Options:
                                  or --patch overlays and exit
 
 Examples:
-  dsh web                                   boot the web profile (same as: dsh --profile web)
-  dsh rescue --from-default-profile web
+  dshs web                                   boot the web profile (same as: dshs --profile web)
+  dshs rescue --from-default-profile web
                                             recreate rescue from the shipped web template, then boot it
-  dsh headless "run the tests"              answer one task, print the result, and exit
-  dsh tui --patch ./extra.yml               boot a custom profile with one extra overlay
-  dsh tui --resume <session>                arguments after the launcher flags reach the app
-  dsh web --help                            the web app's own flags and help
-  dsh plugin --profile tui add <package>    install a plugin into the tui profile
+  dshs headless "run the tests"              answer one task, print the result, and exit
+  dshs tui --patch ./extra.yml               boot a custom profile with one extra overlay
+  dshs tui --resume <session>                arguments after the launcher flags reach the app
+  dshs web --help                            the web app's own flags and help
+  dshs plugin --profile tui add <package>    install a plugin into the tui profile
 
 ```
 
@@ -64,7 +64,7 @@ Examples:
 Invocations: `dsh plugin --help`
 
 ```text
-Usage: dsh plugin [options] [args...]
+Usage: dshs plugin [options] [args...]
 
 manage a profile's plugins by forwarding the remaining arguments to pnpm in the
 profile directory
@@ -176,7 +176,7 @@ Example:
 Invocations: `dsh web --help`, `dsh --profile web --help`
 
 ```text
-Usage: dsh --profile web [options]
+Usage: dshs --profile web [options]
 
 Serve the DeepSeek Harness browser UI.
 
@@ -199,13 +199,13 @@ Options:
   -h, --help                     show this help
 
 Examples:
-  dsh --profile web                          serve on the composed host and port
-  dsh --profile web --no-open                serve without opening a browser
-  dsh --profile web --port 8080              serve on another port
-  dsh --profile web --host 10.0.0.7          bind one local interface address
-  dsh --profile web --public-url https://app.example/ui/ --trusted-host app.example
+  dshs --profile web                          serve on the composed host and port
+  dshs --profile web --no-open                serve without opening a browser
+  dshs --profile web --port 8080              serve on another port
+  dshs --profile web --host 10.0.0.7          bind one local interface address
+  dshs --profile web --public-url https://app.example/ui/ --trusted-host app.example
                                              advertise a prefix-stripping HTTPS proxy entry and admit its authority
-  dsh --profile web --tls-cert ./server-chain.pem --tls-key ./server-key.pem
+  dshs --profile web --tls-cert ./server-chain.pem --tls-key ./server-key.pem
                                              serve HTTPS with an existing certificate and key
 
 ```

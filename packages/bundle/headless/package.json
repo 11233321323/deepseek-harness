@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@deepseek-ai/dsh-brand": "workspace:*",
-    "@deepseek-ai/dsh-tool-ssh": "workspace:*",
     "@deepseek-ai/dsh-cmdline": "workspace:*",
     "@deepseek-ai/dsh-util-values": "workspace:*",
     "@deepseek-ai/schemastery": "workspace:~",

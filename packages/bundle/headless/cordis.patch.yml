@@ -12,8 +12,6 @@
       You are a coding agent powered by the {{model}} model.
 
 - insert:
-    - id: tool-ssh
-      name: '@deepseek-ai/dsh-tool-ssh'
     - id: headless-startup
       name: '@deepseek-ai/dsh-headless/startup'
 

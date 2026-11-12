@@ -44,7 +44,6 @@
 | `@deepseek-ai/dsh-tool-lsp` | `lsp` | `ctx.workingDirectory`、`ctx.tools`、`ctx.lsp`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，因此其模型可见 schema 在更换提供方时保持稳定。运行时要求已注册提供方，例如 `@deepseek-ai/dsh-lsp-stdio`；如果没有提供方，查询会返回结构化 `LSP_UNAVAILABLE` 错误，而不会改变 schema。 |
 | `@deepseek-ai/dsh-tool-ralph` | `ralph` | `ctx.tools`、`ctx.workflowEngine`、`ctx.subagents`、`ctx.systemPrompt`、`a calling Agent (exec.agent parents every fresh round)` | `tool/call`、`tool/result`、`workflow and child session events during execution` | - | 固定的前台工作流会在每个 Round 启动一个全新的结构化子级；模型只能选择不可变目标和可选的 Round 上限。 |
 | `@deepseek-ai/dsh-tool-skill` | `skill` | `ctx.workingDirectory`、`ctx.tools`、`ctx.agents`、`ctx.skills` | `tool/call`、`tool/result`、`user/message replacement catalogs via agent.inject()` | - | - |
-| `@deepseek-ai/dsh-tool-ssh` | `ssh` | `ctx.tools`、`ctx.sandboxPolicy`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | 除非会话已经处于该模式，每个动作都会通过审批服务请求 danger-full-access。本机 OpenSSH 客户端使用已有密钥和 agent；密码和私钥文本会被拒绝。Web 的 standard、ptc、cordis 预设以及 headless profile 挂载此工具。 |
 | `@deepseek-ai/dsh-tool-session-query` | `session_event_read`、`session_event_search`、`session_event_trace`、`session_search`、`session_trace` | `ctx.tools`、`ctx.systemPrompt`、`ctx.sessionQuery`、`a calling Agent for workspace authority` | `tool/call`、`tool/result` | - | 这 5 个只读工具会隐藏提供方游标，并根据不可变的调用 agent 会话为每个结果授权。该包需要选择启用；需要强制截止时间或限制行内输出的组合还会挂载通用超时或 spill 策略。 |
 | `@deepseek-ai/dsh-experimental-tool-subagent-oar` | `subagent_oar` | `ctx.tools`, `ctx.subagents` | `tool/call`, `tool/result`, `parent subagent catalog and completion notices` | - | subagent_oar 工具在为外部提供方配置的别名之间选择。本目录展示 Codex 和 Claude Code 别名；每个部署自行选择提供方。原生模型和权限设置由所选提供方的配置决定。 |
 | `@deepseek-ai/dsh-tool-subagent` | `list_subagent_models`、`subagent` | `ctx.tools`、`ctx.subagents`、`ctx.systemPrompt`、`ctx.sessionProjections`、`用于模型发现和所选路由校验的 ctx.llm` | `tool/call`、`tool/result`、`child session events through the chosen provider` | `subagent`、`subagent_fork` | 加载时的 `toolName` 选择委派名称（默认为 `subagent`）；`modelSelection` 增加可选路由字段。`modelDiscovery` 默认关闭，每个作用域由一个实例注册共享发现工具。Web 与 Desktop preset 启用 spawn 发现和路由字段，并为 `subagent_fork` 保持路由字段关闭。Host 设置服务为每个新顶层 Session 记录授权；子 Session 继承该授权。没有已记录策略时，发现和显式选择只允许当前父级路由。每次委派都会立即返回子代理的名称；本地子代理接受后续消息，外部后端自动汇报单次执行结果。 |
@@ -1922,86 +1921,6 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 ```
 
 来源：[`packages/skill/tool-skill/src/index.ts`](../packages/skill/tool-skill/src/index.ts)
-
-<a id="deepseek-aidsh-tool-ssh"></a>
-
-## `@deepseek-ai/dsh-tool-ssh`
-
-### `ssh`
-
-使用本机 OpenSSH 客户端在远端机器上运行命令或传输文件。认证只使用已有密钥和 SSH agent：不要传入密码或私钥文本。除非会话已经处于 danger-full-access，每个动作都需要审批。exec 运行一条远端命令；list、upload 和 download 使用 sftp；forward 打开本地端口转发，forward_stop 关闭它。主机必须已经在 known_hosts 中。不要发送或打印私钥或密码。
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "action": {
-      "type": "string",
-      "description": "Operation to perform.",
-      "enum": [
-        "exec",
-        "list",
-        "upload",
-        "download",
-        "forward",
-        "forward_stop"
-      ]
-    },
-    "justification": {
-      "type": "string",
-      "description": "One sentence telling the user what this remote operation does and why."
-    },
-    "destination": {
-      "type": "string",
-      "description": "OpenSSH destination (alias, host, or user@host) for every action except forward_stop."
-    },
-    "command": {
-      "type": "string",
-      "description": "Remote command for exec. The remote shell parses it; the local process does not."
-    },
-    "remotePath": {
-      "type": "string",
-      "description": "Remote path for list, upload, or download. list defaults to the login directory when omitted."
-    },
-    "localPath": {
-      "type": "string",
-      "description": "Local path for upload or download."
-    },
-    "port": {
-      "type": "number",
-      "description": "SSH server port. Omit to use the client default."
-    },
-    "identityFile": {
-      "type": "string",
-      "description": "Optional existing private-key file path. Omit to use the agent and default keys. Never pass key text."
-    },
-    "localPort": {
-      "type": "number",
-      "description": "Local loopback port for forward, or the port forward_stop closes."
-    },
-    "remoteHost": {
-      "type": "string",
-      "description": "Host reached from the remote machine for forward. Often 127.0.0.1."
-    },
-    "remotePort": {
-      "type": "number",
-      "description": "Port on remoteHost for forward."
-    },
-    "timeoutMs": {
-      "type": "number",
-      "description": "Deadline for exec, list, upload, or download. Forwards stay open until forward_stop."
-    }
-  },
-  "required": [
-    "action",
-    "justification"
-  ]
-}
-```
-
-来源：[`packages/ssh/tool-ssh/src/index.ts`](../packages/ssh/tool-ssh/src/index.ts)
-
-除非会话已经处于该模式，每个动作都会通过审批服务请求 danger-full-access。本机 OpenSSH 客户端使用已有密钥和 agent；密码和私钥文本会被拒绝。Web 的 standard、ptc、cordis 预设以及 headless profile 挂载此工具。
 
 <a id="deepseek-aidsh-tool-session-query"></a>
 

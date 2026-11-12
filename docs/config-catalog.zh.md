@@ -4545,29 +4545,6 @@ export interface Config {
 ```
 <!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-skill -->
 
-<!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-ssh -->
-<a id="deepseek-aidsh-tool-ssh"></a>
-
-## `@deepseek-ai/dsh-tool-ssh`
-
-- `inject`: `tools` · `sandboxPolicy`
-- `source`: [`packages/ssh/tool-ssh/src/index.ts:31`](../packages/ssh/tool-ssh/src/index.ts)
-
-```ts config-catalog
-/** Local OpenSSH client locations and output bounds. */
-export interface Config {
-  /** `ssh` executable. Default: `ssh` on `PATH`. */
-  sshPath?: string
-  /** `sftp` executable. Default: `sftp` on `PATH`. */
-  sftpPath?: string
-  /** Deadline for one command or transfer, in milliseconds. */
-  timeoutMs?: number
-  /** Maximum retained bytes of each output stream. */
-  maxOutputBytes?: number
-}
-```
-<!-- END GENERATED config-catalog:@deepseek-ai/dsh-tool-ssh -->
-
 <!-- BEGIN GENERATED config-catalog:@deepseek-ai/dsh-tool-str-replace-editor -->
 <a id="deepseek-aidsh-tool-str-replace-editor"></a>
 
