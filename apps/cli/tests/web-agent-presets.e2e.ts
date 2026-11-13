@@ -115,7 +115,7 @@ async function bootWeb(
   const storageRoot = join(profileHome, 'storages')
   const overrides: PatchOptions[] = [
     // storage-json's root is anchored to the real $DSHS_HOME. Unpinned, this
-    // file writes the developer's own `~/.dsh/storages/` — and then reads it
+    // file writes the developer's own `~/.dshs/storages/` — and then reads it
     // back on the next run, so a stored document from any other build decides
     // this test's boot.
     { id: 'storage-json', config: { root: storageRoot } },
@@ -939,7 +939,7 @@ describe('the standard preset documentation skill', () => {
   it.for([false, true])('loads the packaged skill without adding tools (badge skill: %s)', async (withBadge: boolean) => {
     const root = await mkdtemp(join(tmpdir(), 'dsh-standard-doc-'))
     vi.stubEnv('DSHS_HOME', join(root, 'home'))
-    vi.stubEnv('DSH_AGENTS_HOME', join(root, 'agents-home'))
+    vi.stubEnv('DSHS_AGENTS_HOME', join(root, 'agents-home'))
     vi.stubEnv('DSH_BUNDLED_SKILL_DIR', join(root, 'bundled-skills'))
     let docCtx: Context | undefined
     try {
@@ -1045,7 +1045,7 @@ describe('the standard preset documentation skill', () => {
     const projectAgents = join(root, 'project-agents')
     const projectDsh = join(root, 'project-dsh')
     vi.stubEnv('DSHS_HOME', home)
-    vi.stubEnv('DSH_AGENTS_HOME', agentsHome)
+    vi.stubEnv('DSHS_AGENTS_HOME', agentsHome)
     vi.stubEnv('DSH_BUNDLED_SKILL_DIR', join(root, 'bundled-skills'))
     let priorityCtx: Context | undefined
     try {

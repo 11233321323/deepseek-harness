@@ -54,7 +54,7 @@ function cleanEnvironment(root: string, dshHome: string): NodeJS.ProcessEnv {
     !/(?:KEY|SECRET|TOKEN|PASSWORD)/iu.test(name)))
   return {
     ...env,
-    DSH_AGENTS_HOME: join(root, '.agents'),
+    DSHS_AGENTS_HOME: join(root, '.agents'),
     DSHS_HOME: dshHome,
     DSH_TELEMETRY_DISABLED: '1',
     NODE_NO_WARNINGS: '1',

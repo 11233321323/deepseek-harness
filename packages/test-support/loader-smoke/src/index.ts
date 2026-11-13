@@ -227,7 +227,7 @@ export async function runLoaderSmoke(options: LoaderSmokeOptions): Promise<Loade
       tsconfigPath: options.tsconfigPath,
       env: {
         DSHS_HOME: join(cwd, '.dsh'),
-        DSH_AGENTS_HOME: join(cwd, '.agents'),
+        DSHS_AGENTS_HOME: join(cwd, '.agents'),
         ...options.env,
       },
     })

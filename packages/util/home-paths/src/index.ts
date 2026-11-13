@@ -25,14 +25,14 @@ export const DEFAULT_DSH_HOME_DISPLAY = `~/${DSH_HOME_DIR_NAME}`
  */
 export const DSH_HOME_ENV = 'DSHS_HOME'
 
-/** Directory name for the default shared agent configuration root under the OS home. */
-export const AGENTS_HOME_DIR_NAME = '.agents'
+/** Directory name for this edition's agent configuration root under the edition home. */
+export const AGENTS_HOME_DIR_NAME = 'agents'
 
-/** Stable user-facing display form for the default shared agent configuration root. */
-export const DEFAULT_AGENTS_HOME_DISPLAY = `~/${AGENTS_HOME_DIR_NAME}`
+/** Stable user-facing display form for this edition's default agent configuration root. */
+export const DEFAULT_AGENTS_HOME_DISPLAY = `${DEFAULT_DSH_HOME_DISPLAY}/${AGENTS_HOME_DIR_NAME}`
 
-/** Environment variable that overrides the default shared agent configuration root. */
-export const AGENTS_HOME_ENV = 'DSH_AGENTS_HOME'
+/** Environment variable that overrides this edition's agent configuration root. */
+export const AGENTS_HOME_ENV = 'DSHS_AGENTS_HOME'
 
 /**
  * Give a native filesystem watcher one canonical spelling of a path, even
@@ -80,11 +80,11 @@ export function defaultDshHome(): string {
 }
 
 /**
- * Resolve the default shared agent configuration root using Node's platform path rules.
- * @returns the absolute default shared agent configuration root.
+ * Resolve the default agent configuration root under this edition's home.
+ * @returns the absolute default agent configuration root.
  */
 export function defaultAgentsHome(): string {
-  return join(homedir(), AGENTS_HOME_DIR_NAME)
+  return join(defaultDshHome(), AGENTS_HOME_DIR_NAME)
 }
 
 /**
@@ -145,16 +145,15 @@ export function resolveDshHome(configured?: string, env: Record<string, string |
 }
 
 /**
- * Resolve the shared agent configuration root.
+ * Resolve this edition's agent configuration root.
  *
- * Precedence, highest first: an explicit configured path, `$DSH_AGENTS_HOME`,
- * then `~/.agents`. The root holds configuration shared with other agent tools,
- * so it stays independent of the DeepSeek Harness home. An empty or
- * whitespace-only `$DSH_AGENTS_HOME` is treated as unset, so a blank override
+ * Precedence, highest first: an explicit configured path, `$DSHS_AGENTS_HOME`,
+ * then `~/.dshs/agents`. Official DeepSeek Harness agents and `$DSH_AGENTS_HOME`
+ * are never read. An empty or whitespace-only `$DSHS_AGENTS_HOME` is treated as unset, so a blank override
  * never resolves the root to the current working directory.
- * @param configured - explicit shared-root override, which has highest precedence.
- * @param env - environment mapping used to read `DSH_AGENTS_HOME`.
- * @returns the normalized absolute shared agent configuration root.
+ * @param configured - explicit agent-root override, which has highest precedence.
+ * @param env - environment mapping used to read `DSHS_AGENTS_HOME`.
+ * @returns the normalized absolute agent configuration root.
  */
 export function resolveAgentsHome(configured?: string, env: Record<string, string | undefined> = process.env): string {
   return resolveRoot(configured, env, AGENTS_HOME_ENV, defaultAgentsHome)
@@ -193,13 +192,39 @@ export function dshHomeDisplay(resolvedHome: string): string {
 }
 
 /**
- * Describe a resolved shared agent configuration root symbolically for user-facing display.
+ * Describe a resolved agent configuration root symbolically for user-facing display.
  *
  * It never returns an absolute machine path: the default root is labelled
- * `~/.agents`, and any configured root is labelled `$DSH_AGENTS_HOME`.
+ * `~/.dshs/agents`, and any configured root is labelled `$DSHS_AGENTS_HOME`.
  * @param resolvedHome - the absolute path returned by {@link resolveAgentsHome}.
- * @returns `~/.agents` for the default root, otherwise `$DSH_AGENTS_HOME`.
+ * @returns `~/.dshs/agents` for the default root, otherwise `$DSHS_AGENTS_HOME`.
  */
 export function agentsHomeDisplay(resolvedHome: string): string {
   return rootDisplay(resolvedHome, defaultAgentsHome(), DEFAULT_AGENTS_HOME_DISPLAY, AGENTS_HOME_ENV)
+}
+
+/**
+ * Environment for pnpm runs owned by this edition.
+ *
+ * Package-manager state, credentials, cache, and global installation roots stay
+ * under the edition home instead of the account's pnpm/npm defaults.
+ * @param dshHome - explicit harness home; omission resolves `$DSHS_HOME` or `~/.dshs`.
+ * @param environment - caller environment inherited by the package manager.
+ * @returns A new environment with edition-owned pnpm and npm roots.
+ */
+export function pnpmEnvironment(
+  dshHome?: string,
+  environment: NodeJS.ProcessEnv = process.env,
+): Record<string, string> {
+  const home = resolveDshHome(dshHome)
+  const root = join(home, 'pnpm')
+  return {
+    ...Object.fromEntries(Object.entries(environment).filter((entry): entry is [string, string] => entry[1] !== undefined)),
+    PNPM_HOME: join(root, 'bin'),
+    NPM_CONFIG_STORE_DIR: join(home, 'cache', 'pnpm', 'store'),
+    NPM_CONFIG_CACHE_DIR: join(home, 'cache', 'pnpm'),
+    NPM_CONFIG_STATE_DIR: join(root, 'state'),
+    NPM_CONFIG_GLOBAL_DIR: join(root, 'global'),
+    NPM_CONFIG_USERCONFIG: join(root, 'npmrc'),
+  }
 }

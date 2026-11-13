@@ -69,7 +69,7 @@ export async function withDefaultWeb(
         NODE_PATH: undefined,
         TSX_TSCONFIG_PATH: undefined,
         DSHS_HOME: join(root, 'home'),
-        DSH_AGENTS_HOME: join(root, '.agents'),
+        DSHS_AGENTS_HOME: join(root, '.agents'),
         DSH_TELEMETRY_DISABLED: '1',
         DEEPSEEK_API_KEY: 'keyless-default-web-no-call',
         NODE_NO_WARNINGS: '1',

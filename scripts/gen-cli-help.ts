@@ -203,7 +203,7 @@ async function collectHelp(): Promise<HelpPage[]> {
     const environment = {
       ...process.env,
       DSHS_HOME: join(home, 'harness'),
-      DSH_AGENTS_HOME: join(home, 'agents'),
+      DSHS_AGENTS_HOME: join(home, 'agents'),
       DSH_TELEMETRY_DISABLED: '1',
       NO_COLOR: '1',
     }

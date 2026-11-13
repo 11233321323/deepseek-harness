@@ -15,6 +15,7 @@ import {
   dshHomeDisplay,
   dshHomePath,
   expandHomePath,
+  pnpmEnvironment,
   resolveAgentsHome,
   resolveDshHome,
 } from '@deepseek-ai/dsh-home-paths'
@@ -67,28 +68,48 @@ describe('dsh path helpers', () => {
     expect(dshHomeDisplay('/some/other/root')).toBe('$DSHS_HOME')
   })
 
-  it('owns the shared default agents home directory name', () => {
-    expect(AGENTS_HOME_DIR_NAME).toBe('.agents')
-    expect(DEFAULT_AGENTS_HOME_DISPLAY).toBe('~/.agents')
-    expect(defaultAgentsHome()).toBe(join(homedir(), '.agents'))
+  it('keeps the default agents root under this edition home', () => {
+    expect(AGENTS_HOME_DIR_NAME).toBe('agents')
+    expect(DEFAULT_AGENTS_HOME_DISPLAY).toBe('~/.dshs/agents')
+    expect(defaultAgentsHome()).toBe(join(homedir(), '.dshs', 'agents'))
   })
 
-  it('resolves an explicit agents home before DSH_AGENTS_HOME and the default', () => {
+  it('resolves an explicit agents home before DSHS_AGENTS_HOME and the default', () => {
     const envHome = join(homedir(), 'env-agents')
 
-    expect(resolveAgentsHome('/tmp/explicit-agents', { DSH_AGENTS_HOME: '~/env-agents' })).toBe(resolve('/tmp/explicit-agents'))
-    expect(resolveAgentsHome(undefined, { DSH_AGENTS_HOME: '~/env-agents' })).toBe(envHome)
+    expect(resolveAgentsHome('/tmp/explicit-agents', { DSHS_AGENTS_HOME: '~/env-agents' })).toBe(resolve('/tmp/explicit-agents'))
+    expect(resolveAgentsHome(undefined, { DSHS_AGENTS_HOME: '~/env-agents' })).toBe(envHome)
     expect(resolveAgentsHome(undefined, {})).toBe(defaultAgentsHome())
   })
 
-  it('treats an empty or whitespace-only DSH_AGENTS_HOME as unset', () => {
-    expect(resolveAgentsHome(undefined, { DSH_AGENTS_HOME: '' })).toBe(defaultAgentsHome())
-    expect(resolveAgentsHome(undefined, { DSH_AGENTS_HOME: '   ' })).toBe(defaultAgentsHome())
+  it('ignores official agent-home settings', () => {
+    expect(resolveAgentsHome(undefined, {
+      DSH_AGENTS_HOME: '/official/agents',
+      DSH_HOME: '/official',
+    })).toBe(defaultAgentsHome())
+  })
+
+  it('treats an empty or whitespace-only DSHS_AGENTS_HOME as unset', () => {
+    expect(resolveAgentsHome(undefined, { DSHS_AGENTS_HOME: '' })).toBe(defaultAgentsHome())
+    expect(resolveAgentsHome(undefined, { DSHS_AGENTS_HOME: '   ' })).toBe(defaultAgentsHome())
   })
 
   it('labels a resolved agents home by whether it is the default root', () => {
-    expect(agentsHomeDisplay(resolve(defaultAgentsHome()))).toBe('~/.agents')
-    expect(agentsHomeDisplay('/some/other/root')).toBe('$DSH_AGENTS_HOME')
+    expect(agentsHomeDisplay(resolve(defaultAgentsHome()))).toBe('~/.dshs/agents')
+    expect(agentsHomeDisplay('/some/other/root')).toBe('$DSHS_AGENTS_HOME')
+  })
+
+  it('keeps package-manager state under the edition home', () => {
+    const home = join(homedir(), 'edition-home')
+    expect(pnpmEnvironment(home, { PATH: '/bin', NPM_CONFIG_USERCONFIG: '/shared/.npmrc' })).toEqual({
+      PATH: '/bin',
+      PNPM_HOME: join(home, 'pnpm', 'bin'),
+      NPM_CONFIG_STORE_DIR: join(home, 'cache', 'pnpm', 'store'),
+      NPM_CONFIG_CACHE_DIR: join(home, 'cache', 'pnpm'),
+      NPM_CONFIG_STATE_DIR: join(home, 'pnpm', 'state'),
+      NPM_CONFIG_GLOBAL_DIR: join(home, 'pnpm', 'global'),
+      NPM_CONFIG_USERCONFIG: join(home, 'pnpm', 'npmrc'),
+    })
   })
 
   it.each([

@@ -1,4 +1,4 @@
-import { BrandWordmark, FishLogo } from '@deepseek-ai/dsh-client-ui-primitives'
+import { FishLogo } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { SidebarBrandMarkOwnerProps } from '@deepseek-ai/dsh-client-ui-sidebar/client'
 
 /**
@@ -11,9 +11,9 @@ export function OfficialBrandMark({ size }: SidebarBrandMarkOwnerProps) {
 }
 
 /**
- * Render the official name artwork without its independently slotted mark.
- * @returns the official name wordmark.
+ * Render the DSH Special product name without its independently slotted mark.
+ * @returns the edition product name.
  */
 export function OfficialBrandName() {
-  return <BrandWordmark includeMark={false} />
+  return <span data-brand-name="dshs">DSH Special</span>
 }

@@ -35,7 +35,7 @@ it.each([
       configArgs: ['--profile', 'web', '--patch', patch, '--no-open', '--port', '0'],
       env: {
         DSHS_HOME: join(root, '.dsh'),
-        DSH_AGENTS_HOME: join(root, '.agents'),
+        DSHS_AGENTS_HOME: join(root, '.agents'),
         DSH_TELEMETRY_DISABLED: '1',
       },
     })

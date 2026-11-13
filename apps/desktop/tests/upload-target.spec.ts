@@ -36,14 +36,14 @@ describe('desktop upload command', () => {
     const credentials = { ...productionEnvironment, DSH_DESKTOP_AUTO_UPDATE_ENV: environment, DOWNLOAD_TEST_COS_SECRET_ID: 'fixture-id', DOWNLOAD_TEST_COS_SECRET_KEY: 'fixture-key' }
     const plan: DesktopUploadPlan = {
       environment, target: 'win-x64', version: '1.2.3-alpha.4',
-      publicUrl: 'https://desktop-updates.example.com/desktop/dsh-latest-windows-x64.exe',
+      publicUrl: 'https://desktop-updates.example.com/dshs/desktop/dshs-latest-windows-x64.exe',
       bucket: 'fixture-bucket', secretIdEnvName: 'DOWNLOAD_TEST_COS_SECRET_ID',
       secretKeyEnvName: 'DOWNLOAD_TEST_COS_SECRET_KEY', artifacts: [], commit: '0'.repeat(40), dirty: false,
     }
     vi.mocked(loadDesktopPackageEnvironment).mockReturnValue(credentials)
     vi.mocked(createDesktopUploadPlan).mockResolvedValue(plan)
     vi.mocked(uploadDesktopRelease).mockResolvedValue('fixture-records')
-    vi.mocked(tagDesktopRelease).mockReturnValue({ status: 'created', tag: 'desktop-v1.2.3-alpha.4' })
+    vi.mocked(tagDesktopRelease).mockReturnValue({ status: 'created', tag: 'dshs-desktop-v1.2.3-alpha.4' })
 
     await uploadDesktopTarget(['win-x64', ...latest ? ['--latest'] : []])
 
@@ -71,7 +71,8 @@ describe('desktop upload command', () => {
 })
 
 const productionEnvironment = {
-  DSH_DESKTOP_AUTO_UPDATE_ENV: 'production', DOWNLOAD_PROD_COS_BUCKET: 'fixture-bucket',
+  DSH_DESKTOP_AUTO_UPDATE_ENV: 'production', DOWNLOAD_PROD_ORIGIN: 'https://download.deepseek.com',
+  DOWNLOAD_PROD_COS_BUCKET: 'fixture-bucket',
   DOWNLOAD_PROD_COS_SECRET_ID: 'fixture-id', DOWNLOAD_PROD_COS_SECRET_KEY: 'fixture-key', DOWNLOAD_PROD_EO_ZONE_ID: 'zone-fixture',
 }
 
@@ -86,7 +87,7 @@ describe('cache-only submission command', () => {
     expect(uploadDesktopRelease).not.toHaveBeenCalled()
     expect(tagDesktopRelease).not.toHaveBeenCalled()
     expect(purgeDesktopInstaller).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({
-      publicUrl: 'https://download.deepseek.com/desktop/dsh-latest-macos-arm64.dmg',
+      publicUrl: 'https://download.deepseek.com/dshs/desktop/dshs-latest-macos-arm64.dmg',
     }))
   })
 
@@ -115,6 +116,7 @@ describe('cache-only submission command', () => {
     const stdout = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
     const stderr = vi.spyOn(process.stderr, 'write').mockReturnValue(true)
     vi.stubEnv('DSH_DESKTOP_AUTO_UPDATE_ENV', 'production')
+    vi.stubEnv('DOWNLOAD_PROD_ORIGIN', 'https://download.deepseek.com')
     vi.stubEnv('DOWNLOAD_PROD_COS_BUCKET', 'fixture-bucket')
     vi.stubEnv('DOWNLOAD_PROD_COS_SECRET_ID', 'injected-id')
     vi.stubEnv('DOWNLOAD_PROD_COS_SECRET_KEY', 'injected-key')

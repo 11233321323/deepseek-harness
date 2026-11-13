@@ -145,7 +145,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
       env: {
         ...process.env,
         DEEPSEEK_API_KEY: 'keyless-web-best-effort-no-call',
-        DSH_AGENTS_HOME: join(fixture.root, '.agents'),
+        DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
         DSHS_HOME: fixture.home,
         DSH_TELEMETRY_DISABLED: '1',
         NODE_NO_WARNINGS: '1',
@@ -224,7 +224,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-required-no-call',
-          DSH_AGENTS_HOME: join(fixture.root, '.agents'),
+          DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
           DSHS_HOME: fixture.home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',
@@ -277,7 +277,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-required-bind-no-call',
-          DSH_AGENTS_HOME: join(root, '.agents'),
+          DSHS_AGENTS_HOME: join(root, '.agents'),
           DSHS_HOME: home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',
@@ -358,7 +358,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-detached-no-call',
-          DSH_AGENTS_HOME: join(fixture.root, '.agents'),
+          DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
           DSHS_HOME: fixture.home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',

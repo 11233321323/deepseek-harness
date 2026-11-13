@@ -106,7 +106,7 @@ Status: implemented
 
 ### 7. CLI help 读取并发运行；doc graphs 的探测做 memo
 
-- **CLI help：** [`scripts/gen-cli-help.ts`](../../../../scripts/gen-cli-help.ts) 中的 `prefetchHelp()` 在默认 worker 预算内启动 12 个顶层 `dsh … --help` 读取（启动器、`plugin`，以及每个 profile 的简写与 `--profile` 形式），每个读取使用独立的临时 `DSH_HOME` 与 `DSH_AGENTS_HOME`，并由按原顺序进行的遍历消费；嵌套读取共享同一上限。失败的读取在遍历请求该调用时才交给遍历；`close()` 中止排队与运行中的读取，并等待每个已启动的子进程结束。该门禁为 49.9/53.9 → 6.9/7.2 s。
+- **CLI help：** [`scripts/gen-cli-help.ts`](../../../../scripts/gen-cli-help.ts) 中的 `prefetchHelp()` 在默认 worker 预算内启动 12 个顶层 `dshs … --help` 读取（启动器、`plugin`，以及每个 profile 的简写与 `--profile` 形式），每个读取使用独立的临时 `DSHS_HOME` 与 `DSHS_AGENTS_HOME`，并由按原顺序进行的遍历消费；嵌套读取共享同一上限。失败的读取在遍历请求该调用时才交给遍历；`close()` 中止排队与运行中的读取，并等待每个已启动的子进程结束。该门禁为 49.9/53.9 → 6.9/7.2 s。
 - **doc graphs：** [`scripts/gen-doc-graphs.ts`](../../../../scripts/gen-doc-graphs.ts) 中的 `withMemoizedFileSystemProbes()` 在 `renderDocs` 运行期间对 `ts.sys` 的 `fileExists`、`directoryExists`、`realpath`、`readDirectory` 与 `getDirectories` 做 memo，使一次运行中的所有编译器 host 与配置解析共享同一个文件系统视图。运行期间工作区不得改变，写出页面之前恢复原方法。该门禁为 48.7/44.7 → 32.7/34.2 s。
 - **无损依据：** 两个生成器生成的页面逐字节一致。
 - **取舍：** 并发的 help 进程合计峰值约占 3.6 GB 内存。

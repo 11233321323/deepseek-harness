@@ -1,11 +1,12 @@
 {
-  "name": "DeepSeek Harness",
-  "short_name": "DSH",
+  "name": "DSH Special",
+  "short_name": "DSHS",
+  "description": "Pentest edition for network engineering.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#d92d20",
+  "theme_color": "#d92d20",
   "icons": [
     {
       "src": "icon-192.png",

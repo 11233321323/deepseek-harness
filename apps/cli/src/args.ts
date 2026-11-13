@@ -153,7 +153,7 @@ export function parseDshArgs(argv: readonly string[], version: string, manageDes
     .name('dshs')
     .version(version, '-V, --version', 'output the version number')
     .usage('[--profile] <name> [options] [app-args...]\n       dshs plugin --profile <name> <pnpm-args...>')
-    .description('dshs: boot a DeepSeek Harness special-edition profile — an ordered stack of plugin-bundle patch layers under your own overrides.')
+    .description('dshs: boot DSH Special, the network-engineering pentest edition of DeepSeek Harness, from ordered plugin-bundle patch layers.')
     .addHelpText('after', HELP_EXAMPLES)
     .exitOverride()
     // The launcher's flags come first and end at the first token it does not

@@ -10,7 +10,7 @@ import {
 } from '../scripts/macos-app-update-config.mjs'
 
 const roots: string[] = []
-const update = { publicUrl: 'https://desktop-updates.example.com/dsh-desk/feeds/mac-arm64/' }
+const update = { publicUrl: 'https://desktop-updates.example.com/dshs-desk/feeds/mac-arm64/' }
 
 async function fixture(): Promise<{ appPath: string; resourcesDir: string }> {
   const root = await mkdtemp(join(tmpdir(), 'desktop-macos-update-config-'))
@@ -37,14 +37,14 @@ describe('macOS packaged updater configuration', () => {
 
   it('writes and verifies the fixed release feed before signing', async () => {
     const paths = await fixture()
-    expect(createMacOSAppUpdateConfig(update, 'deepseek-harness-updater')).toEqual({
+    expect(createMacOSAppUpdateConfig(update, 'dshs-updater')).toEqual({
       provider: 'generic',
       url: update.publicUrl,
       channel: 'nightly',
-      updaterCacheDirName: 'deepseek-harness-updater',
+      updaterCacheDirName: 'dshs-updater',
     })
-    await writeMacOSAppUpdateConfig(paths.resourcesDir, update, 'deepseek-harness-updater')
-    await expect(verifyMacOSAppUpdateConfig(paths.appPath, update, 'deepseek-harness-updater')).resolves.toBeUndefined()
+    await writeMacOSAppUpdateConfig(paths.resourcesDir, update, 'dshs-updater')
+    await expect(verifyMacOSAppUpdateConfig(paths.appPath, update, 'dshs-updater')).resolves.toBeUndefined()
   })
 
   it.each([
@@ -60,8 +60,8 @@ describe('macOS packaged updater configuration', () => {
   it('rejects another updater cache directory when the signed value is known', async () => {
     const paths = await fixture()
     await writeMacOSAppUpdateConfig(paths.resourcesDir, update, 'wrong-updater')
-    await expect(verifyMacOSAppUpdateConfig(paths.appPath, update, 'deepseek-harness-updater'))
-      .rejects.toThrow(/expected deepseek-harness-updater/u)
+    await expect(verifyMacOSAppUpdateConfig(paths.appPath, update, 'dshs-updater'))
+      .rejects.toThrow(/expected dshs-updater/u)
   })
 })
 

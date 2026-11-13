@@ -1,6 +1,6 @@
-DeepSeek Harness
-DeepSeek Harness
-欢迎使用 DeepSeek Harness
-组装无限可能，共探智能上限
+DSH Special
+DSH Special
+欢迎使用 DSH Special
+面向网络工程使用的渗透版。
 登录
 添加 API Key

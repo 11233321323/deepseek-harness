@@ -33,7 +33,7 @@ async function run(cwd: string, home: string, args: readonly string[]) {
     sourceImport: 'tsx/esm',
     env: {
       DSHS_HOME: home,
-      DSH_AGENTS_HOME: join(cwd, '.agents'),
+      DSHS_AGENTS_HOME: join(cwd, '.agents'),
       DSH_TELEMETRY_DISABLED: '1',
       DEEPSEEK_API_KEY: '',
       NODE_OPTIONS: [

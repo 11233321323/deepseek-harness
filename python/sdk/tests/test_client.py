@@ -1112,7 +1112,7 @@ import sys
 
 json.dump({
     "argv": sys.argv[1:],
-    "DSH_HOME": os.environ.get("DSH_HOME"),
+    "DSHS_HOME": os.environ.get("DSHS_HOME"),
     "DSH_CORDIS_CONFIG": os.environ.get("DSH_CORDIS_CONFIG"),
 }, open(os.environ["ENV_DUMP"], "w"))
 for line in sys.stdin:
@@ -1147,21 +1147,21 @@ def test_client_default_launch_uses_bundled_dsh_sdk_profile_and_explicit_home(
     patch.write_text("[]\n")
     _install_fake_bundled_dsh(tmp_path, monkeypatch)
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setenv("DSH_HOME", str(tmp_path / "ambient-home"))
+    monkeypatch.setenv("DSHS_HOME", str(tmp_path / "ambient-home"))
     monkeypatch.delenv("DSH_CORDIS_CONFIG", raising=False)
 
     with HarnessClient(HarnessConfig(
         profile="sdk",
         patches=("sdk.patch.yml",),
         dsh_home=str(home),
-        env={"ENV_DUMP": str(env_dump), "DSH_HOME": str(tmp_path / "env-home")},
+        env={"ENV_DUMP": str(env_dump), "DSHS_HOME": str(tmp_path / "env-home")},
     )) as client:
         init = client.initialize(provider="deepseek-official", cwd="/workspace", model="deepseek-v4-pro")
 
     assert init.serverInfo.name == "bundled-runtime"
     assert json.loads(env_dump.read_text()) == {
         "argv": ["--profile", "sdk", "--patch", str(patch)],
-        "DSH_HOME": str(home),
+        "DSHS_HOME": str(home),
         "DSH_CORDIS_CONFIG": None,
     }
 
@@ -1174,13 +1174,13 @@ def test_client_accepts_explicit_environment_dsh_home(
     _install_fake_bundled_dsh(tmp_path, monkeypatch)
 
     with HarnessClient(
-        HarnessConfig(profile="custom", env={"ENV_DUMP": str(env_dump), "DSH_HOME": str(home)})
+        HarnessConfig(profile="custom", env={"ENV_DUMP": str(env_dump), "DSHS_HOME": str(home)})
     ) as client:
         client.initialize(provider="deepseek-official", cwd="/workspace", model="deepseek-v4-pro")
 
     assert json.loads(env_dump.read_text()) == {
         "argv": ["--profile", "custom"],
-        "DSH_HOME": str(home),
+        "DSHS_HOME": str(home),
         "DSH_CORDIS_CONFIG": None,
     }
 
@@ -1189,9 +1189,9 @@ def test_client_rejects_an_implicit_default_dsh_home(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     _install_fake_bundled_dsh(tmp_path, monkeypatch)
-    monkeypatch.delenv("DSH_HOME", raising=False)
+    monkeypatch.delenv("DSHS_HOME", raising=False)
 
-    with pytest.raises(ValueError, match="explicit dsh_home or non-empty DSH_HOME"):
+    with pytest.raises(ValueError, match="explicit dsh_home or non-empty DSHS_HOME"):
         HarnessClient(HarnessConfig(env={})).start()
 
 

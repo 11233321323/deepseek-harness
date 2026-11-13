@@ -18,10 +18,10 @@ Status: implemented
 由一个解析器统一掌管 harness home，落在 `@deepseek-ai/dsh-home-paths`，采用单一根目录：
 
 ```
-explicit configured path  >  $DSH_HOME  >  ~/.dsh
+explicit configured path  >  $DSHS_HOME  >  ~/.dshs
 ```
 
-空或仅含空白的 `$DSH_HOME` 被当作未设置处理；否则，`resolve('')` 会悄悄把 home 落在当前工作目录。harness 把所有用户数据都放在同一个根目录下；不存在 XDG 的 config/data/cache 拆分。`dshHomePath(...segments)` 将部署负责的子路径拼接到该根目录下，`dsh-app-boot` 在挂载条目前向 Loader `!!js` 配置表达式暴露它，因此出厂组合无需复制解析器即可派生 `sessions` 和 `storages`。`dshHomeDisplay()` 为面向用户的路径以符号形式命名已解析的根目录——默认 home 显示为 `~/.dsh`，任何已配置的 home 显示为 `$DSH_HOME`——这样用户全局的 `AGENTS.md` 标签就绝不会泄露机器上的绝对路径。它取代了 agent-instructions 中自定义的「默认值 vs `$DSH_HOME`」判断。home 属于进程策略而非配置行：`dsh-agent-instructions` 不接受 home 覆盖，因此组合无法把指令加载指向会话、skill 与存储不会读取的根目录。`resolveAgentsHome()` 与 `agentsHomeDisplay()` 对共享 agent 配置根目录（`$DSH_AGENTS_HOME` 或 `~/.agents`）采用相同的优先级、波浪号展开与符号化标签；该根目录位于 harness home 之外，因为其他 agent 工具会共享它（[共享 agents 根目录](2026-10-05-shared-agents-root-instructions.zh.md)）；`dsh-skill-filesystem` 仍接受自己的 `dshHome` 与 `agentsHome` 字段，用于选择它自己的 skill 根目录，并在指令加载改动中改用共享解析器。
+空或仅含空白的 `$DSHS_HOME` 被当作未设置处理；否则，`resolve('')` 会悄悄把 home 落在当前工作目录。harness 把所有用户数据都放在同一个根目录下；不存在 XDG 的 config/data/cache 拆分。`dshHomePath(...segments)` 将部署负责的子路径拼接到该根目录下，`dsh-app-boot` 在挂载条目前向 Loader `!!js` 配置表达式暴露它，因此出厂组合无需复制解析器即可派生 `sessions` 和 `storages`。`dshHomeDisplay()` 为面向用户的路径以符号形式命名已解析的根目录——默认 home 显示为 `~/.dshs`，任何已配置的 home 显示为 `$DSHS_HOME`——这样用户全局的 `AGENTS.md` 标签就绝不会泄露机器上的绝对路径。它取代了 agent-instructions 中自定义的「默认值 vs `$DSHS_HOME`」判断。home 属于进程策略而非配置行：`dsh-agent-instructions` 不接受 home 覆盖，因此组合无法把指令加载指向会话、skill 与存储不会读取的根目录。`resolveAgentsHome()` 与 `agentsHomeDisplay()` 对本版本 agent 配置根目录（`$DSHS_AGENTS_HOME` 或 `~/.dshs/agents`，位于 harness home 下）采用相同的优先级、波浪号展开与符号化标签；`dsh-skill-filesystem` 也用它解析 `agentsHome` 字段（[本版本 agents 根目录](2026-10-05-shared-agents-root-instructions.zh.md)）；不会读取官方 `$DSH_AGENTS_HOME` 与 `~/.agents`。
 
 `dshCachePath(...segments)` 在解析出的主目录下的 `cache` 目录中派生路径。首个 `{ dshHome }` 选项保留提供方显式配置的主目录覆盖值。它只解析路径，不创建目录；目录创建由调用方负责。`attachment-local` 将此函数用于可重新生成的请求图片版本，持久附件对象仍保留在其带版本的存储树中，因此清空缓存不会删除 Session 附件。已有请求图片缓存条目保留在原处，不再读取或复制；缓存未命中时从持久附件重新生成请求版本。
 
@@ -33,7 +33,7 @@ explicit configured path  >  $DSH_HOME  >  ~/.dsh
 
 **保留两份 `resolveDshHome` 副本。** 它们早已漂移（一个展开波浪号，一个不展开），并把同一条横切事实编码了两遍。`util/` 层的意义正是在于合并，重复的解析器是一个潜在的分歧 bug。
 
-**采用 XDG（遵从 `$XDG_CONFIG_HOME`，或把 config/data/cache 拆分到各自的目录树）。** 经过考虑后放弃，转而采用一个显而易见的根目录。单一的 `$DSH_HOME || ~/.dsh` 基准事实与 `~/.claude` / `~/.aws` 一致，无需对每个 `~/.dsh` 消费方按类别重新归类，也不留下任何需要协调的解析器不对称。
+**采用 XDG（遵从 `$XDG_CONFIG_HOME`，或把 config/data/cache 拆分到各自的目录树）。** 经过考虑后放弃，转而采用一个显而易见的根目录。单一的 `$DSHS_HOME || ~/.dshs` 基准事实与 `~/.claude` / `~/.aws` 一致，无需对每个 `~/.dshs` 消费方按类别重新归类，也不留下任何需要协调的解析器不对称。
 
 ## 影响
 

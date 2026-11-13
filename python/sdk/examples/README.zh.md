@@ -17,7 +17,7 @@ python python/sdk/examples/minimal.py \
   "Inspect the repository and fix the failing tests."
 ```
 
-如需使用兼容代理，请设置 `DEEPSEEK_BASE_URL`；可通过 `DSH_MODEL` 设置脚本的默认模型，通过 `DSH_SYSTEM_PROMPT` 指定部署角色设定。`--model` 是唯一运行时模型选择，不要求匹配的环境变量；`--profile` 可以选择另一个提供 SDK 服务的 profile。所选 home 保存生成的 `sdk-minimal` profile，并在 `sessions/` 下保存未压缩 JSONL 会话日志；脚本绝不会隐式读取 `~/.dsh`。
+如需使用兼容代理，请设置 `DEEPSEEK_BASE_URL`；可通过 `DSH_MODEL` 设置脚本的默认模型，通过 `DSH_SYSTEM_PROMPT` 指定部署角色设定。`--model` 是唯一运行时模型选择，不要求匹配的环境变量；`--profile` 可以选择另一个提供 SDK 服务的 profile。所选 home 保存生成的 `sdk-minimal` profile，并在 `sessions/` 下保存未压缩 JSONL 会话日志；脚本绝不会隐式读取 `~/.dshs`。
 
 随附的 [`@deepseek-ai/dsh-sdk-minimal` 组合包](../../../packages/bundle/sdk-minimal/README.zh.md) 是该模式完整且显式的 Cordis 配置树。它只暴露：
 
@@ -97,19 +97,19 @@ python python/sdk/examples/manage_plugins.py \
   "Install and enable the bundle at /absolute/path/to/my-plugin-bundle."
 ```
 
-当前进程保留原有插件。收到 `restart-required` 后，使用相同 home 重新运行示例以加载已保存的配置。删除仍被当前启动组合使用的组合包，需要先停止该运行时，再使用 `dsh plugin`。
+当前进程保留原有插件。收到 `restart-required` 后，使用相同 home 重新运行示例以加载已保存的配置。删除仍被当前启动组合使用的组合包，需要先停止该运行时，再使用 `dshs plugin`。
 
 ## 添加插件
 
-对同一个显式 home 使用运行时 wheel 包提供的 `dsh` 命令，以进行持久 profile 变更：
+对同一个显式 home 使用运行时 wheel 包提供的 `dshs` 命令，以进行持久 profile 变更：
 
 ```sh
-export DSH_HOME=/absolute/path/to/example-dsh-home
-dsh plugin --profile sdk-minimal add file:/absolute/path/to/my-plugin-bundle
+export DSHS_HOME=/absolute/path/to/example-dsh-home
+dshs plugin --profile sdk-minimal add file:/absolute/path/to/my-plugin-bundle
 ```
 
 在该命令中使用 `sdk-minimal` 可扩展本示例，使用 `sdk` 则扩展基于完整 base 的 SDK profile。Python 调用也可以在 `patches=(...)` 中传入更多绝对 patch 路径；后面的文件优先。所选 profile 必须保留 `@deepseek-ai/dsh-sdk-app` 或另一个 JSON-RPC server 配置项。该示例不接受完整 Cordis 文件或任意进程 argv。
 
-同一个运行时 wheel 包还打包了供直接 CLI（命令行界面）使用的 `web` profile 及其前端产物：`dsh web` 会启动这个独立应用。Python SDK 客户端不能选择 `web`，因为其中没有 JSON-RPC 服务器配置项。
+同一个运行时 wheel 包还打包了供直接 CLI（命令行界面）使用的 `web` profile 及其前端产物：`dshs web` 会启动这个独立应用。Python SDK 客户端不能选择 `web`，因为其中没有 JSON-RPC 服务器配置项。
 
 另见 [Python SDK 教程](../../../docs/user/guide/python-sdk.zh.md) 与 [SDK 参考](../README.zh.md)。

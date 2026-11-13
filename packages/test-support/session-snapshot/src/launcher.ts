@@ -130,7 +130,7 @@ export function launchAcpTestAgent(options: AcpTestLaunchOptions): LaunchedAcpTe
     env: {
       ...options.env,
       DSHS_HOME: join(cwd, '.dsh'),
-      DSH_AGENTS_HOME: join(cwd, '.agents'),
+      DSHS_AGENTS_HOME: join(cwd, '.agents'),
     },
   })
   const child = spawn(

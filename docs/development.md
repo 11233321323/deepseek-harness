@@ -133,7 +133,7 @@ DEEPSEEK_API_KEY=sk-...
 DEEPSEEK_BASE_URL=https://... # optional
 ```
 
-`DEEPSEEK_BASE_URL` is optional and defaults to the public API. The e2e and Web Vitest configurations, and the snapshot configuration when `DSH_SNAPSHOT=record`, load the root `.env` themselves; `pnpm dsh` and `pnpm run demo:ptc` launched from the repository root read it as a project `.env`, which may not set `DEEPSEEK_BASE_URL`, so export that variable or put it in `$DSH_HOME/.env` for those launches. Never commit real credentials. The real-API e2e suites self-skip when `DEEPSEEK_API_KEY` is not set.
+`DEEPSEEK_BASE_URL` is optional and defaults to the public API. The e2e and Web Vitest configurations, and the snapshot configuration when `DSH_SNAPSHOT=record`, load the root `.env` themselves; `pnpm dshs` and `pnpm run demo:ptc` launched from the repository root read it as a project `.env`, which may not set `DEEPSEEK_BASE_URL`, so export that variable or put it in `$DSHS_HOME/.env` for those launches. Never commit real credentials. The real-API e2e suites self-skip when `DEEPSEEK_API_KEY` is not set.
 
 ### Git integrations
 
@@ -155,7 +155,7 @@ Contributors can opt into the comprehensive local gate set with `pnpm run check:
 
 Outside CI (`CI` other than `true`), default worker counts follow the [local worker budget](../scripts/parallelism.ts): 12 for gate schedulers, `build`, `typecheck`, Oxlint, and publint, and 48 for Vitest forks and local coverage. `doc-sync`, `test:docs`, `hygiene`, and `check:all` run at most 8 gates at once, in CI as well. `os.availableParallelism()` reports host CPUs rather than a container's CPU quota, so uncapped defaults oversubscribe shared hosts. CI keeps the runner's CPU count. `DSH_GATE_CONCURRENCY`, `DSH_OXLINT_THREADS`, `DSH_COVERAGE_MAX_WORKERS`, and Vitest `--maxWorkers` override the defaults.
 
-`run-gates` gives the CLI help generator one child at a time; direct `pnpm run verify-cli-help` uses the standalone worker budget. `DSH_CLI_HELP_CONCURRENCY` overrides that child limit with a positive integer validated before startup. Each invocation retains its private `DSH_HOME` and `DSH_AGENTS_HOME` and 30-second deadline.
+`run-gates` gives the CLI help generator one child at a time; direct `pnpm run verify-cli-help` uses the standalone worker budget. `DSH_CLI_HELP_CONCURRENCY` overrides that child limit with a positive integer validated before startup. Each invocation retains its private `DSHS_HOME` and `DSHS_AGENTS_HOME` and 30-second deadline.
 
 ### CI gates
 

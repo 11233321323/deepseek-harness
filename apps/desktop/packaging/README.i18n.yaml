@@ -18,8 +18,8 @@
   en: 0b35c7471c09b27a
   zh: cc4a382b99fc3210
 /desktop-packaging/release-versions:
-  en: bdee4adb7916e6cc
-  zh: 2880c3594ebab7ab
+  en: 75592a083253b263
+  zh: ab5bcf02186a6ad1
 /desktop-packaging/configuration-and-local-builds:
   en: 5b4f0f80a117f202
   zh: ff05be196c181087
@@ -33,8 +33,8 @@
   en: f429bc0c280e2dfa
   zh: 4adbcc9e906bdf80
 /desktop-packaging/local-macos-dmg-without-release-signing:
-  en: 1146bbc11be43960
-  zh: 7c13543a0513c059
+  en: 4d071136a60c7bf0
+  zh: 6b79e3085f3b2aa6
 /desktop-packaging/macos-release-signing-and-diagnostics:
   en: a0b4aa1080ecf6fb
   zh: 37d4b8934f89bee8
@@ -42,14 +42,14 @@
   en: 5860c306375ddd63
   zh: a76e3cdbbe25c79e
 /desktop-packaging/local-official-bundles-from-a-loopback-registry:
-  en: b42f103358d0dfd7
-  zh: a534164ad9eb00da
+  en: 1224fe7eb85bcd8c
+  zh: 56a538e13ead2a6b
 /desktop-packaging/runtime-file-selection-and-installation-checks:
-  en: a92b8fda03ae3f19
-  zh: 5b2f0b4e1cad1745
+  en: ac434d114bf896bd
+  zh: cd557be35b0e6171
 /desktop-packaging/desktop-runtime-preparation:
-  en: 84be38ab3136fff7
-  zh: bb4ed12ee0e1dfa0
+  en: 15fcc1af37b4f446
+  zh: 4b41b7293ae01fb4
 /desktop-packaging/installation-and-release-verification:
   en: eb35eb973b796643
   zh: c1c52311632b7296

@@ -13,6 +13,7 @@ import {
 } from '@deepseek-ai/dsh-app-boot'
 import { PROFILE_TEMPLATES, DEFAULT_PROFILE_BUNDLES } from '@deepseek-ai/dsh-official-bundles'
 import { scrubbedParentEnv } from '@deepseek-ai/dsh-subprocess'
+import { pnpmEnvironment } from '@deepseek-ai/dsh-home-paths'
 import { parseInstallSpec } from './install-spec.ts'
 import { awaitTreeGone, leadsOwnGroup, treeAlive, type RunTree } from './run-tree.ts'
 import { incompatiblePlugin } from './failure.ts'
@@ -333,7 +334,10 @@ export async function runProfilePnpm(
       output = output.subarray(output.length - options.outputBytes)
     }
   }
-  const environment = { ...(options.execution === 'cli' ? process.env : scrubbedParentEnv()), ...options.env }
+  const environment = pnpmEnvironment(context.home, {
+    ...(options.execution === 'cli' ? process.env : scrubbedParentEnv()),
+    ...options.env,
+  })
   const restore = async (): Promise<void> => {
     for (const file of savedFiles) {
       if (file.text === undefined) await rm(file.path, { force: true })

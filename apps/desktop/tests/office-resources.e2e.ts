@@ -55,7 +55,7 @@ describe.skipIf(!existsSync(builtHost))('built Desktop Host Office resources', (
     ['an empty runtime directory', 'empty-runtime'],
     ['an unusable primary runtime path', 'relative-source'],
   ] as const)('starts the Host with %s and the packaged Office skills', async (_label, mode) => {
-    const root = mkdtempSync(join(tmpdir(), 'dsh-desktop-office-'))
+    const root = mkdtempSync(join(tmpdir(), 'dshs-desktop-office-'))
     let host: DesktopHostProcess | undefined
     const failures: Error[] = []
     try {

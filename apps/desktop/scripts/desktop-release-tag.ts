@@ -29,7 +29,7 @@ export interface DesktopReleaseTagResult {
  * @returns The tag name, distinct from the `dsh-v*` tags the npm family publishes from.
  */
 export function desktopReleaseTag(version: string): string {
-  return `desktop-v${version}`
+  return `dshs-desktop-v${version}`
 }
 
 /**

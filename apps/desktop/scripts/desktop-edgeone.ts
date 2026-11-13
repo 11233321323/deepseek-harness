@@ -31,7 +31,7 @@ export function resolveDesktopPurgeConfig(
   const zoneId = requiredEnvironmentValue(env, 'DOWNLOAD_PROD_EO_ZONE_ID')
   if (!/^zone-[a-z0-9]+$/u.test(zoneId)) throw new DesktopPurgeError('desktop purge: DOWNLOAD_PROD_EO_ZONE_ID must name one EO zone')
   return {
-    zoneId, publicUrl: publicUrl ?? `${update.origin}/desktop/${desktopLatestInstallerFilename(target)}`,
+    zoneId, publicUrl: publicUrl ?? `${update.origin}/dshs/desktop/${desktopLatestInstallerFilename(target)}`,
     secretId: requiredEnvironmentValue(env, update.secretIdEnvName), secretKey: requiredEnvironmentValue(env, update.secretKeyEnvName),
   }
 }

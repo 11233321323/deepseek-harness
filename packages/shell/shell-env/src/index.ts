@@ -207,7 +207,7 @@ export class ShellEnvRegistry extends Service {
 
     return Object.freeze(
       Object.fromEntries(Object.entries(values).sort(([left], [right]) => left.localeCompare(right))),
-    ) as DshEnvironment
+    )
   }
 
   // TODO(bash-env-list-builtins): Include registry-owned built-ins before diagnostics,

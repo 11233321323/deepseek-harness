@@ -9,7 +9,7 @@ import { composeEntries, loadProfileDirectory } from '@deepseek-ai/dsh-app-boot'
 import { createPluginProfile } from '../src/project-manager.ts'
 
 it('retains one shared resource consumer in the Desktop Web profile', () => {
-  const home = mkdtempSync(join(tmpdir(), 'dsh-desktop-profile-mcp-'))
+  const home = mkdtempSync(join(tmpdir(), 'dshs-desktop-profile-mcp-'))
   try {
     const profileDir = join(home, 'profiles', 'desktop')
     createPluginProfile(profileDir)
