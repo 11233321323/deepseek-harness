@@ -145,7 +145,7 @@ export function resolveDshLaunch(
     environment: () => ({
       ...(options.env ?? process.env),
       ...dshLaunch.environment,
-      ...dshHome === undefined ? {} : { DSH_HOME: dshHome },
+      ...dshHome === undefined ? {} : { DSHS_HOME: dshHome },
     }),
     description: `dsh profile ${JSON.stringify(profile)}`,
     initializeTimeoutMs: options.initializeTimeoutMs ?? DEFAULT_INITIALIZE_TIMEOUT_MS,

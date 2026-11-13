@@ -53,12 +53,12 @@ let tempHome: string
 let previousDshHome: string | undefined
 beforeAll(() => {
   tempHome = mkdtempSync(join(tmpdir(), 'dsh-otel-home-'))
-  previousDshHome = process.env.DSH_HOME
-  process.env.DSH_HOME = tempHome
+  previousDshHome = process.env.DSHS_HOME
+  process.env.DSHS_HOME = tempHome
 })
 afterAll(() => {
-  if (previousDshHome === undefined) delete process.env.DSH_HOME
-  else process.env.DSH_HOME = previousDshHome
+  if (previousDshHome === undefined) delete process.env.DSHS_HOME
+  else process.env.DSHS_HOME = previousDshHome
   rmSync(tempHome, { recursive: true, force: true })
 })
 

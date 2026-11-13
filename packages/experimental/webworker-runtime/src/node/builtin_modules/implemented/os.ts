@@ -20,7 +20,7 @@ export function tmpdir(): string {
 
 /**
  * Home directory.
- * @returns `$DSH_HOME` inside the VFS.
+ * @returns `$DSHS_HOME` inside the VFS.
  */
 export function homedir(): string {
   return DSH_HOME

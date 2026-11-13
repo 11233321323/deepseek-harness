@@ -61,7 +61,7 @@ pnpm --dir apps/desktop run package:win:x64 --build-version 0.1.6-alpha.1.202609
 
 `--build-version auto` 会给出当天的下一个序号：读取目标 bucket 中已发布的对象，未配置 bucket 或列举未能在期限内完成时回退到本目标的本地输出目录。上传前请确认它打印的版本号；run script 会自行透传 `--`，打包入口两种写法都接受。
 
-production 发布使用产品版本本身，不传 `--build-version`。其上传成功后会把打包所用 commit 打成 `desktop-v<版本>` 标签；来自有改动工作区的构建不打标签，打标签失败也只打印手工命令，不会让已完成的上传变成失败。test 与本地构建有意不留标签，而所有产物的清单都记录 `dshBuildCommit` 与 `dshBuildDirty`，直接分发的构建同样可溯源。
+production 发布使用产品版本本身，不传 `--build-version`。其上传成功后会把打包所用 commit 打成 `dshs-desktop-v<版本>` 标签；来自有改动工作区的构建不打标签，打标签失败也只打印手工命令，不会让已完成的上传变成失败。test 与本地构建有意不留标签，而所有产物的清单都记录 `dshBuildCommit` 与 `dshBuildDirty`，直接分发的构建同样可溯源。
 
 安装包独立于版本和发布环境内置 `DSH_DESKTOP_UPDATE_CHANNEL`（默认 `nightly`，也可选择 `stable`）。该值提供默认渠道；[桌面设置](../README.zh.md#local-desktop-settings)中保存的选择优先，包括安装另一个包之后。操作人员独立于版本后缀选择渠道；两个渠道均接受正式版本和预发布版本。稳定产品可生成 `-test.<date>.<sequence>` 构建，但该版本低于稳定基准，不能升级已安装的更高版本。保持自动降级关闭；稳定修复版需要提升产品版本。CI 版本选择与发布见 [CI 发布](../publishing/ci/README.zh.md#package-and-publish)。
 
@@ -174,7 +174,7 @@ pnpm run package:desktop:mac:arm64:unsigned
 pnpm run package:desktop:mac:x64:unsigned
 ```
 
-添加 `--check` 仅验证本地配置和工具而不构建，或添加 `--dir` 只生成解包应用。DMG 路径为 `apps/desktop/.desktop-build/targets/<target>/unsigned-artifacts/deepseek-harness-<version>-mac-<arch>-unsigned.dmg`。所有检查通过后，命令打印 `DMG:` 及其绝对路径。打开后将应用复制到本地测试目录。
+添加 `--check` 仅验证本地配置和工具而不构建，或添加 `--dir` 只生成解包应用。DMG 路径为 `apps/desktop/.desktop-build/targets/<target>/unsigned-artifacts/dshs-<version>-mac-<arch>-unsigned.dmg`。所有检查通过后，命令打印 `DMG:` 及其绝对路径。打开后将应用复制到本地测试目录。
 
 这些命令忽略 `.env.macos` 和继承的发布配置，使用 `com.deepseek.harness` 作为应用 ID，并省略自动更新和强制更新配置。构建工具、标准网络代理与 `DSH_DESKTOP_NPM_REGISTRY` 仍可从 shell 提供。它们跳过 Developer ID 签名、Apple 公证、临时签名钥匙串和公证代理修改。Electron 使用无需证书的本地 ad-hoc 签名，以便修改后的可执行文件能够运行；DMG 不签名。准备阶段和组装后的应用仍执行运行时完整性与冒烟检查。本地构建不生成更新源、ZIP 或发布完成记录，上传命令无法发布这些产物。macOS 可能要求在“系统设置 → 隐私与安全性”中批准打开未经公证的应用。这类构建不放入 Computer Use helper，Computer Use 准备时会报告 helper 缺失。
 
@@ -240,7 +240,7 @@ pnpm run dev:bundle-registry
 
 在打包应用中打开“插件 → 添加插件”，粘贴一条打印出的规格，选择**自定义地址**，粘贴打印出的 registry URL 后安装。自定义 registry 会被单独询问，因此必须由本进程回答每一个依赖：仓库自有的包取自本次运行的产物，第三方包则通过固定重定向到 `registry.npmjs.org` 保留 npm 的真实元数据与字节，因此仍需要网络访问。安装后的条目仍归类为 Official，因为它的包名在目录中。registry 选择会在此浏览器中记住；再次选择某个提供的 registry 即可切回。
 
-一次运行的产物是不可变的，所以重新构建会提供新的命名空间和新 URL；当已安装版本与运行版本一致时，Official 的**更新**控件不会出现。profile 会在 `pnpm-lock.yaml` 中记录上一次运行的 tarball URL，而 pnpm 会校验已记录的条目，因此用新 URL 再次安装或重装该 bundle 会被 `ERR_PNPM_TARBALL_URL_MISMATCH` 拒绝，并且可能继续保留旧文件。要在同一版本上验证改动后的代码，请先清除过期的解析结果——在 `$DSH_HOME/profiles/<profile>` 中运行 `pnpm clean --lockfile`，或改用全新的 profile——然后再从新 URL 安装。`bundle-registry.json` 记录每个归档的版本、文件名、大小和 SHA-512 完整性，以及打包所用 checkout 的 commit 和 dirty 标记。
+一次运行的产物是不可变的，所以重新构建会提供新的命名空间和新 URL；当已安装版本与运行版本一致时，Official 的**更新**控件不会出现。profile 会在 `pnpm-lock.yaml` 中记录上一次运行的 tarball URL，而 pnpm 会校验已记录的条目，因此用新 URL 再次安装或重装该 bundle 会被 `ERR_PNPM_TARBALL_URL_MISMATCH` 拒绝，并且可能继续保留旧文件。要在同一版本上验证改动后的代码，请先清除过期的解析结果——在 `$DSHS_HOME/profiles/<profile>` 中运行 `pnpm clean --lockfile`，或改用全新的 profile——然后再从新 URL 安装。`bundle-registry.json` 记录每个归档的版本、文件名、大小和 SHA-512 完整性，以及打包所用 checkout 的 commit 和 dirty 标记。
 
 所提供的 `time` 是真实的打包时间，因此 pnpm 11 默认的 24 小时 `minimumReleaseAge` 会在 profile 的 `pnpm-workspace.yaml` 中记录它授予的豁免（`minimumReleaseAgeExclude`）；如果那里显式配置了更严格的策略，安装会以 pnpm 自己的报错失败，而不会被覆盖。`~/.npmrc` 或 profile 的 `.npmrc` 中的 `@scope:registry` 路由会覆盖该 scope 的 `--registry`，因此不能让它们指向正在提供服务的 scope。
 
@@ -252,7 +252,7 @@ Desktop 在本地打包工作区包，并通过目标捆绑的 Node 和 pnpm 安
 
 [Electron 外壳文件清单](../scripts/electron-builder-config.mjs)从单独收集的 `resources/app.asar/node_modules` 依赖中排除已识别的 JavaScript/CSS/TypeScript source map 和 TypeScript 构建缓存。这些排除规则保留运行时代码、原生模块、WASM、数据文件（包括普通 `.map` 资源）、许可证和 notices；[外壳归档测试](../tests/shell-file-selection.spec.ts)检查保留文件的字节和排除项。
 
-[Office 转换提供方](../../../packages/document/office-kit/README.zh.md)是 web-app 挂载的 Host 服务，因此所有加载 web-app 的应用（包括 `dsh web` 和 Desktop）都提供它以及 [Office 工具](../../../packages/document/tool-office/README.zh.md)。该提供方[自行解析 Kit 的引擎](../../../packages/document/office-kit/README.zh.md#understand-the-implementation)，包括把原生引擎清单映射到解包后的实体目录。Desktop 打包只负责携带和解包引擎：携带目标声明的原生引擎；kit 未声明匹配的原生目标时携带 WASM；目标引擎缺失时，准备阶段在打包前拒绝。完整的 Office 依赖（包括 JavaScript 库以及所选引擎的可执行文件、数据、许可证和声明）解包到 `resources/app.asar.unpacked/dsh/node_modules/` 下。Desktop 壳在 [main.ts](../src/main.ts) 中把主运行时位置传给 Host，由 Host 设为 `DSH_PRIMARY_RUNTIME`；两者都不传 Kit 位置。所有加载 web-app 的应用都提供 Office 技能，Desktop 从 `resources/app.asar` 内的技能包读取它们；只有 Desktop 挂载内置 Python 环境（`workspace-dependencies`）。在 macOS 上，原生 helper 获得 [LibreOffice UNO 桥](https://github.com/LibreOffice/core/blob/master/sysui/desktop/macosx/hardened_runtime.xcent.in)所需的 JIT 权限。`@deepseek-ai/dsh-experimental-cua-macos/native/bin` 下的 Computer Use helper 应用也整体解包到 `resources/app.asar.unpacked/dsh/node_modules/` 下，提供方打开该副本。
+[Office 转换提供方](../../../packages/document/office-kit/README.zh.md)是 web-app 挂载的 Host 服务，因此所有加载 web-app 的应用（包括 `dshs web` 和 Desktop）都提供它以及 [Office 工具](../../../packages/document/tool-office/README.zh.md)。该提供方[自行解析 Kit 的引擎](../../../packages/document/office-kit/README.zh.md#understand-the-implementation)，包括把原生引擎清单映射到解包后的实体目录。Desktop 打包只负责携带和解包引擎：携带目标声明的原生引擎；kit 未声明匹配的原生目标时携带 WASM；目标引擎缺失时，准备阶段在打包前拒绝。完整的 Office 依赖（包括 JavaScript 库以及所选引擎的可执行文件、数据、许可证和声明）解包到 `resources/app.asar.unpacked/dsh/node_modules/` 下。Desktop 壳在 [main.ts](../src/main.ts) 中把主运行时位置传给 Host，由 Host 设为 `DSH_PRIMARY_RUNTIME`；两者都不传 Kit 位置。所有加载 web-app 的应用都提供 Office 技能，Desktop 从 `resources/app.asar` 内的技能包读取它们；只有 Desktop 挂载内置 Python 环境（`workspace-dependencies`）。在 macOS 上，原生 helper 获得 [LibreOffice UNO 桥](https://github.com/LibreOffice/core/blob/master/sysui/desktop/macosx/hardened_runtime.xcent.in)所需的 JIT 权限。`@deepseek-ai/dsh-experimental-cua-macos/native/bin` 下的 Computer Use helper 应用也整体解包到 `resources/app.asar.unpacked/dsh/node_modules/` 下，提供方打开该副本。
 
 打包应用运行编译后的 JavaScript 和预生成的 Typert 元数据，不编译 TypeScript 插件。源码级调试导航和编辑器声明仍可从开发包中获取。[复制规则测试](../tests/runtime-file-policy.spec.ts)覆盖排除项和保留资源；[产物 smoke](../tests/fixtures/runtime-payload-smoke.mjs) 在 Host smoke 和最终清单验证之前，使用 Electron RunAsNode 执行。产物 smoke 解析搜索工具使用的 ripgrep 可执行文件，并验证文本搜索和文件枚举。Windows 签名构建在依赖签名后运行这些检查；其他构建在 `prepare:dsh` 中运行。[Host smoke](../scripts/smoke-runtime.ts) 使用捆绑的 Python 创建 DOCX、XLSX 和 PPTX 输入，并通过真实 Office 提供方逐一执行：PDF 转换、PNG 渲染、转换为对应的 OpenDocument 格式，以及针对 XLSX 的重算，检查每个输出的签名。每个组装后的应用（包括目录包和未签名构建）都会针对 ASAR 重复产物和 Host 检查。归档完整性检查将归档内完整描述符与准备结果比对，并核对归档和解包目录中的文件内容与清单、归档内文件记录的执行标志，以及解包文件的物理权限。转换失败会在写入发布记录前终止打包；macOS DMG/ZIP 构建在公证前执行这些检查。
 
@@ -266,7 +266,7 @@ Windows 安装器在启动时和选定目标目录后检查应用是否正在运
 
 目录改名、空目标目录删除和旧版恢复遇到 Windows 错误 5、32 或 33 时最多尝试十次，每次等待递增 250 毫秒（每个操作合计等待 11.25 秒）。其他错误立即停止。替换失败时，安装器将 Windows 错误、相关路径和恢复结果写入解压报告旁的 `directory-failure-<时间戳>.log`。如果恢复失败，安装器会清理未被占用的暂存文件并保留备份。上报此失败后，退出清理不再重试恢复。请保留报告所列的备份目录，并在重新安装前联系支持人员。静默安装保存相同的诊断，不显示弹窗。
 
-解压失败时，安装器会把 7-Zip 的结果和完整错误输出写入更新缓存目录 `%LOCALAPPDATA%\<按包名派生>-updater\installer-logs\extract-failure-<时间戳>.log`（当前为 `@deepseek-aidsh-desktop-updater`），并在弹窗中显示首条错误行和 **复制错误信息** 按钮；静默安装只写入报告。未签名的 Windows 构建（`DSH_DESKTOP_UNSIGNED=1`）会将安装包命名为 `deepseek-harness-<版本>-win-x64-unsigned.exe`，以免被误当作发布产物。
+解压失败时，安装器会把 7-Zip 的结果和完整错误输出写入更新缓存目录 `%LOCALAPPDATA%\dshs-updater\installer-logs\extract-failure-<时间戳>.log`，并在弹窗中显示首条错误行和 **复制错误信息** 按钮；静默安装只写入报告。未签名的 Windows 构建（`DSH_DESKTOP_UNSIGNED=1`）会将安装包命名为 `dshs-<版本>-win-x64-unsigned.exe`，以免被误当作发布产物。
 
 Windows 打包将 7-Zip 过滤器固定为 `BCJ`，以兼容内置的 NSIS 解码器。这样可以保留 x64 安装包中由依赖携带的 ARM64 二进制文件；自动 ARM64 过滤会生成该解码器无法解压的条目。
 
@@ -280,7 +280,7 @@ NSIS 在安装阶段清理临时解压目录，完成后才显示完成页或自
 
 Windows 并行准备 Electron 和 primary-runtime；macOS 串行准备二者。只有两份运行时资源均成功，才会准备 CLI 并写入 `versions.json`。任一 Windows 运行时准备失败时，流程会等待另一路结束后再报告失败，且不写入 CLI 资源或版本记录。嵌套准备阶段的计时存在重叠，不能直接相加。
 
-打包进程环境中的 `DSH_DESKTOP_PACKAGE_CACHE_DIR` 为共享的 `downloads` 和 `pnpm-store` 缓存指定非空绝对目录；省略时使用 `.desktop-build`。临时安装项目、lockfile 和配置仍逐次独立创建。运行时安装校验 store 完整性并复制包文件，防止后续签名修改缓存字节；清理时保留这些缓存。两个打包工作流使用 `runner.tool_cache/dsh-desktop-package-cache`；Windows 仓库依赖安装使用工作区盘根目录下独立的 `.pnpm-store`。两次安装日志均标明各自的 store 并报告包复用情况。每次运行仍通过新的运行时 lockfile 解析依赖。可写缓存仅供可信构建任务共享；完整性校验不能隔离不可信的写入者。仅在没有任务使用缓存时清理。缓存磁盘用量由操作者管理，不自动淘汰。
+打包进程环境中的 `DSH_DESKTOP_PACKAGE_CACHE_DIR` 为共享的 `downloads` 和 `pnpm-store` 缓存指定非空绝对目录；省略时使用 `.desktop-build`。临时安装项目、lockfile 和配置仍逐次独立创建。运行时安装校验 store 完整性并复制包文件，防止后续签名修改缓存字节；清理时保留这些缓存。两个打包工作流使用 `runner.tool_cache/dshs-desktop-package-cache`；Windows 仓库依赖安装使用工作区盘根目录下独立的 `.pnpm-store`。两次安装日志均标明各自的 store 并报告包复用情况。每次运行仍通过新的运行时 lockfile 解析依赖。可写缓存仅供可信构建任务共享；完整性校验不能隔离不可信的写入者。仅在没有任务使用缓存时清理。缓存磁盘用量由操作者管理，不自动淘汰。
 
 Desktop [补丁策略](../scripts/runtime-patch-policy.ts) 将每份工作区补丁明确归为共享、仅工作区或仅运行时。共享项复用根目录补丁字节，并对照根锁文件校验 hash；仅运行时项使用仓库内的独立文件，不改变工作区安装。仅工作区补丁用于构建工具或已嵌入客户端 bundle 的依赖。未分类或过期的条目、文件缺失、hash 改变、解析版本不兼容，以及仅工作区包进入运行时，都会阻止打包。[准备脚本](../scripts/prepare-runtime-patches.ts) 只写入临时项目；pnpm 负责应用选中的补丁，应用失败时会报错。
 

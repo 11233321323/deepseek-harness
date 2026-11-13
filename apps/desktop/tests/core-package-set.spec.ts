@@ -32,7 +32,7 @@ function packageSetProject(): {
   base: DesktopCorePackageRecord
   host: DesktopCorePackageRecord
 } {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-desktop-package-set-'))
+  const root = mkdtempSync(join(tmpdir(), 'dshs-desktop-package-set-'))
   roots.push(root)
   const packageDir = join(root, DESKTOP_PACKAGES_DIR)
   mkdirSync(packageDir)

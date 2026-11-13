@@ -110,7 +110,7 @@ async function waitForStartup(
   }
   stdout.on('data', (chunk: string) => {
     stdoutText += chunk
-    url ??= /dsh web: (http:\/\/[^\s]+)/u.exec(stdoutText)?.[1]
+    url ??= /dshs web: (http:\/\/[^\s]+)/u.exec(stdoutText)?.[1]
     finish()
   })
   stderr.on('data', (chunk: string) => {
@@ -145,8 +145,8 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
       env: {
         ...process.env,
         DEEPSEEK_API_KEY: 'keyless-web-best-effort-no-call',
-        DSH_AGENTS_HOME: join(fixture.root, '.agents'),
-        DSH_HOME: fixture.home,
+        DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
+        DSHS_HOME: fixture.home,
         DSH_TELEMETRY_DISABLED: '1',
         NODE_NO_WARNINGS: '1',
       },
@@ -224,8 +224,8 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-required-no-call',
-          DSH_AGENTS_HOME: join(fixture.root, '.agents'),
-          DSH_HOME: fixture.home,
+          DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
+          DSHS_HOME: fixture.home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',
         },
@@ -237,7 +237,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
       expect(result.timedOut).toBe(false)
       expect(result.signal).toBeUndefined()
       expect(result.exitCode).toBe(1)
-      expect(result.stdout).not.toContain('dsh web: http://')
+      expect(result.stdout).not.toContain('dshs web: http://')
       expect(result.stderr).toContain('startup failed:')
       expect(result.stderr).toContain(`${id} (required)`)
       expect(result.stderr).toContain(diagnostic)
@@ -277,8 +277,8 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-required-bind-no-call',
-          DSH_AGENTS_HOME: join(root, '.agents'),
-          DSH_HOME: home,
+          DSHS_AGENTS_HOME: join(root, '.agents'),
+          DSHS_HOME: home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',
         },
@@ -290,7 +290,7 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
       expect(result.timedOut).toBe(false)
       expect(result.signal).toBeUndefined()
       expect(result.exitCode).toBe(1)
-      expect(result.stdout).not.toContain('dsh web: http://')
+      expect(result.stdout).not.toContain('dshs web: http://')
       expect(result.stderr).toContain('startup failed:')
       expect(result.stderr).toContain('dsh: startup failed: 2 required plugins did not activate')
       expect(result.stderr).toContain('Failed plugins (1):')
@@ -358,8 +358,8 @@ describe.skipIf(!builtArtifactsExist)('dsh Web profile best-effort startup', () 
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-detached-no-call',
-          DSH_AGENTS_HOME: join(fixture.root, '.agents'),
-          DSH_HOME: fixture.home,
+          DSHS_AGENTS_HOME: join(fixture.root, '.agents'),
+          DSHS_HOME: fixture.home,
           DSH_TELEMETRY_DISABLED: '1',
           NODE_NO_WARNINGS: '1',
         },

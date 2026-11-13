@@ -75,7 +75,7 @@ function waitForReadyLine(child: ChildProcess): Promise<string> {
     const timer = setTimeout(() => { reject(new Error(`dsh web not ready in 90s; output:\n${out}`)) }, 90_000)
     const onData = (chunk: Buffer): void => {
       out += chunk.toString()
-      const match = /dsh web: (http:\/\/[^\s]+)/.exec(out)
+      const match = /dshs web: (http:\/\/[^\s]+)/.exec(out)
       if (match?.[1] !== undefined) {
         clearTimeout(timer)
         resolveReady(match[1])
@@ -323,8 +323,8 @@ describe('dsh web keyless CLI smoke', () => {
         env: {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-no-call',
-          DSH_HOME: join(sessionsDir, '.dsh'),
-          DSH_AGENTS_HOME: join(sessionsDir, '.agents'),
+          DSHS_HOME: join(sessionsDir, '.dsh'),
+          DSHS_AGENTS_HOME: join(sessionsDir, '.agents'),
           TSX_TSCONFIG_PATH: join(REPO_ROOT, 'tsconfig.json'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -446,8 +446,8 @@ describe('dsh web keyless CLI smoke', () => {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-workspace',
           DEEPSEEK_BASE_URL: `http://127.0.0.1:${address.port}`,
-          DSH_HOME: join(workspace, '.dsh'),
-          DSH_AGENTS_HOME: join(workspace, '.agents'),
+          DSHS_HOME: join(workspace, '.dsh'),
+          DSHS_AGENTS_HOME: join(workspace, '.agents'),
           TSX_TSCONFIG_PATH: join(REPO_ROOT, 'tsconfig.json'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -559,7 +559,7 @@ describe('dsh web keyless CLI smoke', () => {
           ...process.env,
           DEEPSEEK_API_KEY: 'keyless-web-retry',
           DEEPSEEK_BASE_URL: `http://127.0.0.1:${address.port}`,
-          DSH_HOME: join(workspace, '.dsh'),
+          DSHS_HOME: join(workspace, '.dsh'),
           TSX_TSCONFIG_PATH: join(REPO_ROOT, 'tsconfig.json'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -648,8 +648,8 @@ describe('dsh web keyless CLI smoke', () => {
           DEEPSEEK_API_KEY: 'keyless-web-ptc',
           DEEPSEEK_BASE_URL: `http://127.0.0.1:${address.port}`,
           DSH_TOOLS_MODE: mode === 'native' ? 'ptc' : 'native',
-          DSH_HOME: join(workspace, '.dsh'),
-          DSH_AGENTS_HOME: join(workspace, '.agents'),
+          DSHS_HOME: join(workspace, '.dsh'),
+          DSHS_AGENTS_HOME: join(workspace, '.agents'),
           TSX_TSCONFIG_PATH: join(REPO_ROOT, 'tsconfig.json'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -733,8 +733,8 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY || notReady.length > 0)('web smoke
         cwd: sessionsDir,
         env: {
           ...process.env,
-          DSH_HOME: join(sessionsDir, '.dsh'),
-          DSH_AGENTS_HOME: join(sessionsDir, '.agents'),
+          DSHS_HOME: join(sessionsDir, '.dsh'),
+          DSHS_AGENTS_HOME: join(sessionsDir, '.agents'),
           TSX_TSCONFIG_PATH: join(REPO_ROOT, 'tsconfig.json'),
         },
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -773,7 +773,7 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY || notReady.length > 0)('web smoke
 
   it('empty-state first send completes a real model round', async () => {
     onTestFailed(() => saveFailureShot(page, 'w5-first-round'))
-    // This scenario spawns its own server against a fresh $DSH_HOME with the
+    // This scenario spawns its own server against a fresh $DSHS_HOME with the
     // DeepSeek credential inherited from the environment, so no onboarding
     // step mounts and the page is immediately interactive.
     // Fresh world: connect a Workspace so the composer starts live.

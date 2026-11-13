@@ -9,7 +9,7 @@ import { runtimeFixture } from './runtime-fixture.ts'
 
 const roots: string[] = []
 function temporaryRoot(): string {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-desktop-test-'))
+  const root = mkdtempSync(join(tmpdir(), 'dshs-desktop-test-'))
   roots.push(root)
   return root
 }

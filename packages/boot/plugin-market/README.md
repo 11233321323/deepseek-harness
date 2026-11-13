@@ -24,7 +24,7 @@ English | [中文](README.zh.md)
 <a id="use-this-package"></a>
 ## Use this package
 
-The optional [custom plugin indexes bundle](../../experimental/plugin-market-bundle/README.md) mounts the service as the `plugin-market` row; shipped profiles leave the bundle off. Like `plugin-manager`, the row is disabled without a profile, and it waits for `pluginManager`. No index source is configured by default, so the Host sends no index request until a user adds one.
+The web-app bundle mounts this service as the `plugin-market` row and sets `indexes` to `https://cdn.jsdelivr.net/npm/dsh-plugin-catalog/index.json`, a third-party community catalog. Like `plugin-manager`, the row is disabled without a profile, and it waits for `pluginManager`. The Host does not fetch an index until Discover or `plugin_market` reads one. Installing a listed bundle still goes through `pluginManager` and its confirmation.
 
 | Config | Default | Meaning |
 |---|---|---|

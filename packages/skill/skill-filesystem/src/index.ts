@@ -50,9 +50,9 @@ export interface Config {
   providerName?: string
   /** Whether project and user roots are included around custom roots. */
   includeDefaultRoots?: boolean
-  /** DeepSeek Harness config root. Defaults to `$DSH_HOME` or `~/.dsh`. */
+  /** DeepSeek Harness config root. Defaults to `$DSHS_HOME` or `~/.dshs`. */
   dshHome?: string
-  /** Shared agent config root. Defaults to `$DSH_AGENTS_HOME` or `~/.agents`. */
+  /** Edition agent config root. Defaults to `$DSHS_AGENTS_HOME` or `~/.dshs/agents`. */
   agentsHome?: string
   /** Additional skill roots scanned after project roots and before user roots. */
   customSkillDirs?: string[]

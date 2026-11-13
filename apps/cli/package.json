@@ -1,6 +1,6 @@
 {
   "name": "@deepseek-ai/dsh",
-  "description": "dsh CLI: profile launch, plugin management, and configuration inspection",
+  "description": "dshs CLI for DSH Special, the network-engineering pentest edition of DeepSeek Harness",
   "version": "0.2.2-rc.2",
   "publishConfig": {
     "access": "public"
@@ -12,7 +12,7 @@
   },
   "type": "module",
   "bin": {
-    "dsh": "lib/bin.js"
+    "dshs": "lib/bin.js"
   },
   "files": [
     "lib/*.js",

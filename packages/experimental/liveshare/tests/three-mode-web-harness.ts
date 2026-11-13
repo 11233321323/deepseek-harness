@@ -423,8 +423,8 @@ export async function bootWebOwner(options: WebOwnerOptions = {}): Promise<WebOw
     tsconfigPath,
     sourceImport: 'tsx/esm',
     env: {
-      DSH_HOME: home,
-      DSH_AGENTS_HOME: join(cwd, '.agents'),
+      DSHS_HOME: home,
+      DSHS_AGENTS_HOME: join(cwd, '.agents'),
       DSH_TELEMETRY_DISABLED: '1',
       DEEPSEEK_API_KEY: '',
       // Diagnostic only: the fixture appends one line per adapter call to this temp file.

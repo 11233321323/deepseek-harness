@@ -31,7 +31,7 @@ description: "将完整 Desktop 安装包与更新清单发布到选定下载服
 
 ## 部署环境与测试发布标识
 
-`DSH_DESKTOP_AUTO_UPDATE_ENV` 同时选择打包写入的 URL 与后续 COS 上传环境，可取 `test` 或 `production`；缺省为 `test`。测试打包通过 `DOWNLOAD_TEST_ORIGIN` 提供 HTTPS origin；生产使用 `https://download.deepseek.com`。上传通过 `DOWNLOAD_TEST_COS_BUCKET` 或 `DOWNLOAD_PROD_COS_BUCKET` 提供所选 bucket。生产清单位于 `dsh-desk/feeds/<target>/`，安装包位于 `dsh-desk/bin/<target>/`。测试发布必须配置 `DOWNLOAD_TEST_RELEASE_ID`：32 位小写十六进制字符，分别插入路径 `dsh-desk/<release-id>/feeds/<target>/` 和 `dsh-desk/<release-id>/bin/<target>/`。YAML 引用、稳定通道别名和 blockmap 都位于该发布目录内。目标为 `mac-arm64`、`mac-x64` 和 `win-x64`。
+`DSH_DESKTOP_AUTO_UPDATE_ENV` 同时选择打包写入的 URL 与后续 COS 上传环境，可取 `test` 或 `production`；缺省为 `test`。测试打包通过 `DOWNLOAD_TEST_ORIGIN` 提供 HTTPS origin；生产使用 `https://download.deepseek.com`。上传通过 `DOWNLOAD_TEST_COS_BUCKET` 或 `DOWNLOAD_PROD_COS_BUCKET` 提供所选 bucket。生产清单位于 `dshs-desk/feeds/<target>/`，安装包位于 `dshs-desk/bin/<target>/`。测试发布必须配置 `DOWNLOAD_TEST_RELEASE_ID`：32 位小写十六进制字符，分别插入路径 `dshs-desk/<release-id>/feeds/<target>/` 和 `dshs-desk/<release-id>/bin/<target>/`。YAML 引用、稳定通道别名和 blockmap 都位于该发布目录内。目标为 `mac-arm64`、`mac-x64` 和 `win-x64`。
 
 更新目标与上传凭据都与所选环境对应；生产固定下载还需配置 [EdgeOne 设置](#fixed-downloads)：
 
@@ -69,9 +69,9 @@ Windows NSIS 上传要求安装包旁存在生成的非空 `.exe.blockmap`。blo
 
 ## 固定安装包下载
 
-上传设置 `Content-Disposition: attachment`，`filename` 沿用经校验安装包的 basename，保留完整版本、平台和架构。固定 `dsh-latest-*` URL 与 nightly/stable 升级通道独立，不另加命名后缀。发布后需验证 CDN 响应头透传及浏览器保存文件名。
+上传设置 `Content-Disposition: attachment`，`filename` 沿用经校验安装包的 basename，保留完整版本、平台和架构。固定 `dshs-latest-*` URL 与 nightly/stable 升级通道独立，不另加命名后缀。发布后需验证 CDN 响应头透传及浏览器保存文件名。
 
-固定安装包下载在仓库根目录使用 `pnpm run upload:latest:mac:arm64`、`pnpm run upload:latest:mac:x64` 或 `pnpm run upload:latest:win:x64`。它们把已完成目标的 DMG 或 EXE 上传到 `desktop/dsh-latest-macos-arm64.dmg`、`desktop/dsh-latest-macos-x64.dmg` 或 `desktop/dsh-latest-windows-x64.exe`。生产 URL 以 `https://download.deepseek.com/` 开头；测试 URL 使用 `DOWNLOAD_TEST_ORIGIN`。两个部署环境均复用目标 dotenv 中的部署、bucket 和凭据、全部常规发布校验以及下述上传审计。每个命令覆盖一个固定对象，不发布更新清单、blockmap 或发布标签。测试固定下载在测试 bucket 中跨发布 ID 共享；包内更新 URL 仍要求原有发布 ID。发布由操作人员显式执行，也允许预发布版本。生产命令随后提交一次 EdgeOne URL 缓存清除任务并报告任务 ID，不查询或等待缓存清除完成。测试上传仍由部署基础设施管理缓存策略。本地回环测试覆盖上传行为；真实 COS 和 CDN 验收由发布操作人员负责。
+固定安装包下载在仓库根目录使用 `pnpm run upload:latest:mac:arm64`、`pnpm run upload:latest:mac:x64` 或 `pnpm run upload:latest:win:x64`。它们把已完成目标的 DMG 或 EXE 上传到 `dshs/desktop/dshs-latest-macos-arm64.dmg`、`dshs/desktop/dshs-latest-macos-x64.dmg` 或 `dshs/desktop/dshs-latest-windows-x64.exe`。生产 URL 以 `https://download.deepseek.com/` 开头；测试 URL 使用 `DOWNLOAD_TEST_ORIGIN`。两个部署环境均复用目标 dotenv 中的部署、bucket 和凭据、全部常规发布校验以及下述上传审计。每个命令覆盖一个固定对象，不发布更新清单、blockmap 或发布标签。测试固定下载在测试 bucket 中跨发布 ID 共享；包内更新 URL 仍要求原有发布 ID。发布由操作人员显式执行，也允许预发布版本。生产命令随后提交一次 EdgeOne URL 缓存清除任务并报告任务 ID，不查询或等待缓存清除完成。测试上传仍由部署基础设施管理缓存策略。本地回环测试覆盖上传行为；真实 COS 和 CDN 验收由发布操作人员负责。
 
 生产固定下载要求在目标 dotenv 中配置 `DOWNLOAD_PROD_EO_ZONE_ID`，且既有 `DOWNLOAD_PROD_COS_SECRET_ID` / `DOWNLOAD_PROD_COS_SECRET_KEY` 身份具备对应站点的 `teo:CreatePurgeTask` 权限。发布操作人员须在使用前确认该权限；无需新增 CI Secret。上传前解析必需配置。提交请求超时为 30 秒，不自动重试。
 

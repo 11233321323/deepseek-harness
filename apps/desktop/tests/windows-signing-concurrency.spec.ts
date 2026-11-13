@@ -79,7 +79,7 @@ vi.mock('../scripts/packaging-run.mjs', () => ({
 vi.mock('../scripts/windows-signing-state.mjs', () => ({
   beginWindowsSigningAttempt: vi.fn((options: { runDirectory: string; target: string; stateDirectory?: string }) => {
     expect(options.stateDirectory).toBeUndefined()
-    const lock = join(state.root, '.dsh-desktop-signing', 'attempt.json')
+    const lock = join(state.root, '.dshs-desktop-signing', 'attempt.json')
     mkdirSync(dirname(lock), { recursive: true })
     writeFileSync(lock, 'batch attempt', { flag: 'wx' })
     return {
@@ -137,7 +137,7 @@ afterEach(async () => {
 })
 
 const execute = () => runWindowsSigningConcurrencyExperiment(['--execute', '--config-root', state.root, '--rounds', '1'])
-const lock = () => join(state.root, '.dsh-desktop-signing', 'attempt.json')
+const lock = () => join(state.root, '.dshs-desktop-signing', 'attempt.json')
 
 it('requires opt-in before reading configuration or querying a device', async () => {
   await runWindowsSigningConcurrencyExperiment([])

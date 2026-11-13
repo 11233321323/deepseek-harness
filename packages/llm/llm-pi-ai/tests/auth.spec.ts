@@ -26,7 +26,7 @@ const CODEX = recordKeyFor('openai-codex')
 
 const dirs: string[] = []
 
-/** A context whose credential records live in a throwaway `$DSH_HOME`. */
+/** A context whose credential records live in a throwaway `$DSHS_HOME`. */
 async function stored(
   layers?: Parameters<typeof createLaunchEnvironmentSnapshot>[0],
   initialRefs?: Record<string, string>,

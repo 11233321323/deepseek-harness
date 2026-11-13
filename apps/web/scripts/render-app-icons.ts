@@ -1,6 +1,6 @@
 /**
- * Render the install icons of the Web application from the official
- * application tile.
+ * Render the install icons of the DSH Special Web application from the
+ * edition-owned application tile.
  *
  * A browser installs a Web App only with a raster 192px and a 512px icon, masks
  * the icon it puts on the home screen, and has no manifest support for iOS,

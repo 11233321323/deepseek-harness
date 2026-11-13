@@ -101,9 +101,9 @@ describe('official browser-brand plugin', () => {
     }
   })
 
-  it('renders the official name independently from both requested mark sizes', () => {
+  it('renders the DSH Special name independently from both requested mark sizes', () => {
     const name = render(<OfficialBrandName />)
-    expect(name.container.querySelector('svg')?.getAttribute('viewBox')).toBe('26 0 156 24')
+    expect(name.container.querySelector('[data-brand-name="dshs"]')?.textContent).toBe('DSH Special')
     name.unmount()
 
     const mark = render(<OfficialBrandMark size={34} />)

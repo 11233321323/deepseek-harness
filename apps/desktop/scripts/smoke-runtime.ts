@@ -38,11 +38,11 @@ export function assertOfficeSkillsLoadable(results: ReadonlyArray<{ readonly nam
 export async function smokeDesktopRuntime(
   root: string, node: string, runtime: DesktopRuntimeDescriptor, environment: NodeJS.ProcessEnv, resourcesRuntime: string,
 ): Promise<void> {
-  const home = mkdtempSync(join(tmpdir(), 'dsh-desktop-smoke-'))
+  const home = mkdtempSync(join(tmpdir(), 'dshs-desktop-smoke-'))
   const profile = join(home, 'profiles', 'desktop')
   const hostEnvironment = {
     ...Object.fromEntries(Object.entries(environment).filter(([name]) => !/^(?:npm|pnpm|corepack)_/iu.test(name))),
-    DSH_HOME: home, HOME: home, USERPROFILE: home,
+    DSHS_HOME: home, HOME: home, USERPROFILE: home,
     XDG_CONFIG_HOME: home, XDG_CACHE_HOME: home, XDG_STATE_HOME: home,
     APPDATA: home, LOCALAPPDATA: home,
     npm_config_userconfig: join(home, 'npmrc'), npm_config_globalconfig: join(home, 'npmrc'),

@@ -1,5 +1,5 @@
-DeepSeek Harness
-DeepSeek Harness
+DSH Special
+DSH Special
 Sign in timed out
 Sign in again
 Add API Key

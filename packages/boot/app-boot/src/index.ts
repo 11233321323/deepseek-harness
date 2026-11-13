@@ -1,7 +1,7 @@
 /**
  * Shared boot glue for `dsh` profiles, including the CLI packaged by the Python runtime wheel: load the gitignored
  * `.env`, install the fail-loud Loader guards, resolve the config path (snapshot-aware), load the
- * optional user patch layers from the Harness home (`~/.dsh`), expose its path resolver to
+ * optional user patch layers from the edition Harness home (`~/.dshs`), expose its path resolver to
  * config expressions, and drive the Cordis Loader against a leaf `cordis.yml` until the tree settles.
  * @module @deepseek-ai/dsh-app-boot
  */
@@ -170,7 +170,7 @@ const HOME_LAYER_ENDPOINT_NAMES = new Set(['DEEPSEEK_BASE_URL', 'DEEPSEEK_SEARCH
  * Whether the Harness-home `.env` alone may set a bootstrap-only name. Each such name chooses where requests go: a
  * proxy for every request, a DeepSeek endpoint for the model or search requests that carry the user's credential.
  * The invoking directory's file arrives with a clone and keeps refusing them. The home file is the user's own, and
- * the profile patches beside it can already set these endpoints as plugin `baseURL` fields; `DSH_HOME` is itself
+ * the profile patches beside it can already set these endpoints as plugin `baseURL` fields; `DSHS_HOME` is itself
  * bootstrap-only, so no `.env` can relocate this exemption. The CA and TLS names in the same group stay refused
  * everywhere: they change what is trusted, not where traffic goes.
  * @param name - the variable name as the file spells it.

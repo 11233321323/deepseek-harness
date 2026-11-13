@@ -961,13 +961,13 @@ describe('FileSystemSkillProvider', () => {
   })
 
   it('uses default home root resolution without exposing builtin skills', async () => {
-    const previousDshHome = process.env.DSH_HOME
-    const previousAgentsHome = process.env.DSH_AGENTS_HOME
+    const previousDshHome = process.env.DSHS_HOME
+    const previousAgentsHome = process.env.DSHS_AGENTS_HOME
     const previousBundledSkillDir = process.env.DSH_BUNDLED_SKILL_DIR
     const envHome = await tempDir('skill-env-home')
     try {
-      process.env.DSH_HOME = join(envHome, '.dsh')
-      process.env.DSH_AGENTS_HOME = join(envHome, '.agents')
+      process.env.DSHS_HOME = join(envHome, '.dsh')
+      process.env.DSHS_AGENTS_HOME = join(envHome, '.agents')
       const bundled = join(envHome, 'bundled-skills')
       process.env.DSH_BUNDLED_SKILL_DIR = bundled
       await writeSkill(join(envHome, '.dsh/skills'), 'env-skill', 'Env skill')
@@ -993,29 +993,29 @@ describe('FileSystemSkillProvider', () => {
       expect((await isolated.skills.list()).map(skill => skill.name)).toEqual(['custom-isolated-skill'])
       await isolated.fiber.dispose()
 
-      process.env.DSH_HOME = join(envHome, 'empty-dsh')
+      process.env.DSHS_HOME = join(envHome, 'empty-dsh')
       delete process.env.DSH_BUNDLED_SKILL_DIR
-      process.env.DSH_AGENTS_HOME = join(envHome, 'empty-agents')
+      process.env.DSHS_AGENTS_HOME = join(envHome, 'empty-agents')
       const empty = new Context()
       await empty.plugin(SkillRegistry)
       SkillFileSystem.apply(empty, { watch: false })
       expect(await empty.skills.list()).toEqual([])
 
-      delete process.env.DSH_AGENTS_HOME
+      delete process.env.DSHS_AGENTS_HOME
       expect(new SkillFileSystem.FileSystemSkillProvider(empty, {
         signal: new AbortController().signal,
         invalidate() {},
       }, { dshHome: join(envHome, 'empty-dsh') }).name).toBe('filesystem')
     } finally {
       if (previousDshHome === undefined) {
-        delete process.env.DSH_HOME
+        delete process.env.DSHS_HOME
       } else {
-        process.env.DSH_HOME = previousDshHome
+        process.env.DSHS_HOME = previousDshHome
       }
       if (previousAgentsHome === undefined) {
-        delete process.env.DSH_AGENTS_HOME
+        delete process.env.DSHS_AGENTS_HOME
       } else {
-        process.env.DSH_AGENTS_HOME = previousAgentsHome
+        process.env.DSHS_AGENTS_HOME = previousAgentsHome
       }
       if (previousBundledSkillDir === undefined) {
         delete process.env.DSH_BUNDLED_SKILL_DIR

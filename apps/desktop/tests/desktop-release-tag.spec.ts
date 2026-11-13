@@ -23,29 +23,29 @@ function recorder(responses: Record<string, string | Error>): {
 
 describe('desktop release tag', () => {
   it('names a tag distinct from the npm family tags', () => {
-    expect(desktopReleaseTag(VERSION)).toBe(`desktop-v${VERSION}`)
+    expect(desktopReleaseTag(VERSION)).toBe(`dshs-desktop-v${VERSION}`)
   })
 
   it('creates and pushes a tag for the packaged commit', () => {
     const { run, calls } = recorder({ tag: '' })
     expect(tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', run }))
-      .toEqual({ tag: `desktop-v${VERSION}`, status: 'created' })
+      .toEqual({ tag: `dshs-desktop-v${VERSION}`, status: 'created' })
     expect(calls).toEqual([
-      ['git', 'tag', '--list', `desktop-v${VERSION}`],
-      ['git', 'tag', `desktop-v${VERSION}`, COMMIT],
-      ['git', 'push', 'origin', `desktop-v${VERSION}`],
+      ['git', 'tag', '--list', `dshs-desktop-v${VERSION}`],
+      ['git', 'tag', `dshs-desktop-v${VERSION}`, COMMIT],
+      ['git', 'push', 'origin', `dshs-desktop-v${VERSION}`],
     ])
   })
 
   it('pushes an existing tag that already names the uploaded commit', () => {
-    const { run, calls } = recorder({ tag: `desktop-v${VERSION}`, 'rev-list': COMMIT })
+    const { run, calls } = recorder({ tag: `dshs-desktop-v${VERSION}`, 'rev-list': COMMIT })
     expect(tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', run }))
-      .toEqual({ tag: `desktop-v${VERSION}`, status: 'present' })
-    expect(calls.at(-1)).toEqual(['git', 'push', 'origin', `desktop-v${VERSION}`])
+      .toEqual({ tag: `dshs-desktop-v${VERSION}`, status: 'present' })
+    expect(calls.at(-1)).toEqual(['git', 'push', 'origin', `dshs-desktop-v${VERSION}`])
   })
 
   it('refuses to move a tag that names another commit', () => {
-    const { run, calls } = recorder({ tag: `desktop-v${VERSION}`, 'rev-list': OTHER })
+    const { run, calls } = recorder({ tag: `dshs-desktop-v${VERSION}`, 'rev-list': OTHER })
     const result = tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', run })
     expect(result.status).toBe('failed')
     expect(result.detail).toMatch(new RegExp(`already names ${OTHER}`, 'u'))
@@ -62,18 +62,18 @@ describe('desktop release tag', () => {
     // `git tag` would fail with "already exists" and short-circuit a combined command, leaving the push undone.
     const { run } = recorder({ tag: '', push: new Error('remote rejected') })
     expect(tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', run }))
-      .toMatchObject({ status: 'failed', recovery: [`git push origin desktop-v${VERSION}`] })
+      .toMatchObject({ status: 'failed', recovery: [`git push origin dshs-desktop-v${VERSION}`] })
   })
 
   it('recovers a failed tag by creating it before pushing', () => {
     const { run } = recorder({ tag: new Error('cannot write ref') })
     expect(tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', run }))
-      .toMatchObject({ recovery: [`git tag desktop-v${VERSION} ${COMMIT}`, `git push origin desktop-v${VERSION}`] })
+      .toMatchObject({ recovery: [`git tag dshs-desktop-v${VERSION} ${COMMIT}`, `git push origin dshs-desktop-v${VERSION}`] })
   })
 
   it('pushes to a named remote', () => {
     const { run, calls } = recorder({ tag: '' })
     tagDesktopRelease({ version: VERSION, commit: COMMIT, repositoryRoot: '.', remote: 'upstream', run })
-    expect(calls.at(-1)).toEqual(['git', 'push', 'upstream', `desktop-v${VERSION}`])
+    expect(calls.at(-1)).toEqual(['git', 'push', 'upstream', `dshs-desktop-v${VERSION}`])
   })
 })

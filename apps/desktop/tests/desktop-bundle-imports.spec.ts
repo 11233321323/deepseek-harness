@@ -58,7 +58,7 @@ describe('desktop bundle imports', () => {
 })
 
 describe('packaged imports plugin', () => {
-  const root = mkdtempSync(join(tmpdir(), 'dsh-desktop-bundle-imports-'))
+  const root = mkdtempSync(join(tmpdir(), 'dshs-desktop-bundle-imports-'))
   const entries = {
     static: ['import { app } from "electron";', 'import { resolveDshHome } from "@deepseek-ai/dsh-home-paths";', 'export const home = resolveDshHome(app);'],
     dynamic: ['import { app } from "electron";', 'export const home = () => import("@deepseek-ai/dsh-home-paths").then(m => m.resolveDshHome(app));'],

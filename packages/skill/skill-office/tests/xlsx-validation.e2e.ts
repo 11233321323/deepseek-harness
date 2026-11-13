@@ -80,8 +80,8 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY || !runtime).each(['native', 'ptc'
       env: {
         DSH_PRIMARY_RUNTIME: runtime,
         DSH_PERMISSION_MODE: 'danger-full-access',
-        DSH_HOME: join(controlRoot, 'home'),
-        DSH_AGENTS_HOME: join(controlRoot, 'agents'),
+        DSHS_HOME: join(controlRoot, 'home'),
+        DSHS_AGENTS_HOME: join(controlRoot, 'agents'),
         DSH_TELEMETRY_DISABLED: '1',
         HTTP_PROXY: process.env.DSH_OFFICE_TEST_PROXY,
         HTTPS_PROXY: process.env.DSH_OFFICE_TEST_PROXY,

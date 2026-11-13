@@ -61,7 +61,7 @@ job 排队时，先对照 job 页面请求的标签与 **Settings → Actions �
 
 将仓库变量 `DESKTOP_PUBLISH_RUNNERS` 配置为已注册 runner 名称到唯一标签和目标的 JSON 映射，例如 `{"mini":{"label":"dsh-mini-publish","target":["mac-arm64","mac-x64"]}}`。该标签只能分配给这台 runner。目标可为单个名称或非空列表；上述 Mac 条目允许同一台机器处理两种架构的打包工作流。Windows 使用目标 `win-x64`。留存包的目标必须与所选打包工作流一致。路由 job 检查原构建成功的 job，发布器再检查自身 runner 名称与记录一致。机器之间不需要共享文件系统或局域网连接。
 
-管理员必须创建 `desktop-test` 和 `desktop-production`，分别设置必需审批人并允许 `master` 部署分支。工作流会检查两种环境的审批人配置。test 可允许发起者自行审批。GitHub App 需要安装到本仓库、具有 Contents write 权限，并获准在 `desktop-v*` tag ruleset 下创建发布 tag。审批不会把审批人的 tag 权限传给 App。缺少配置会停止发布，不回退到个人 token。App action 创建短期 token，并在结束后撤销。使用发布账户的文件系统权限保护本机私钥及 COS 凭据文件。token action 需要密钥内容，因此已屏蔽日志的 PEM 在 job 期间也会经过 runner 临时 `GITHUB_OUTPUT` 文件；日志屏蔽不限制本地文件访问。
+管理员必须创建 `desktop-test` 和 `desktop-production`，分别设置必需审批人并允许 `master` 部署分支。工作流会检查两种环境的审批人配置。test 可允许发起者自行审批。GitHub App 需要安装到本仓库、具有 Contents write 权限，并获准在 `dshs-desktop-v*` tag ruleset 下创建发布 tag。审批不会把审批人的 tag 权限传给 App。缺少配置会停止发布，不回退到个人 token。App action 创建短期 token，并在结束后撤销。使用发布账户的文件系统权限保护本机私钥及 COS 凭据文件。token action 需要密钥内容，因此已屏蔽日志的 PEM 在 job 期间也会经过 runner 临时 `GITHUB_OUTPUT` 文件；日志屏蔽不限制本地文件访问。
 
 Environment 审批限制此工作流，不限制同一机器账户运行的任意代码。账户隔离和强制源分支限制属于独立运维工作。保持现有发布 Environment 不变。test job 使用自己的审批人，不创建真实发布 tag；本地模拟接口覆盖 tag 创建与恢复，但不验证 App 权限。
 
@@ -77,7 +77,7 @@ Environment 审批限制此工作流，不限制同一机器账户运行的任�
 
 打包只保留文件。成功后，在 `master` 上打开 **Publish Desktop · COS → Run workflow**，填写打包运行 URL 中的 `package_run_id`，并可填写 `package_run_attempt`。留空选择最新尝试及其成功的 package job；归档重跑继续使用原始构建 attempt，新的构建失败时不回退到较早成功构建。显式填写则选择对应构建，独立的 GitHub 归档失败不取消其资格。Windows 必须完成签名，macOS 必须完成公证和 stapling。GitHub job 证据确定原 runner，本机清单在审批前提供 preset、版本、源码和通道。不会下载安装包或请求 artifact。旧清单的 `publishRequested=false` 不影响发布资格；本机文件缺失或变化会停止发布。
 
-在原 runner 安装依赖前，准备阶段和审批后的发布 job 都会检查所选 `publishing/<preset>.json` 是否为可读取的 JSON。配置缺失时会报告路径；补齐后可使用同一个包重试发布。之后仍会执行完整配置与签名校验。上传前，发布器校验全部留存文件的哈希、版本及目标信息，再复核平台签名。macOS 校验 DMG，并解压 ZIP 校验 app 票据；Windows 校验 Authenticode、配置的签名证书指纹及时间戳。准备阶段生成中文审批摘要，分别展示版本、通道、平台和环境，以及留存的 test release ID、安装包与升级 YAML 的完整 URL、原打包尝试链接、源码 ref/SHA、平台校验结果及拟创建的 tag。折叠详情包含 COS 存储桶，以及实际上传字节的大小和 SHA-256（包括改写后的 YAML）。公开仓库的摘要会公开测试前缀和下载 URL；前缀不提供访问鉴权。两种发布 job 均等待 **Review deployments → Approve and deploy**，随后重新核对已批准的 manifest 与上传计划摘要。文件或目标变化会被拒绝。审批不能修改版本；应拒绝并重新打包。两种环境都上传缺失文件、校验远端字节，再更新 YAML。此工作流没有只上传文件的模式。production 最后为记录的打包提交创建 `desktop-v<version>`；已有 tag 必须指向同一提交。
+在原 runner 安装依赖前，准备阶段和审批后的发布 job 都会检查所选 `publishing/<preset>.json` 是否为可读取的 JSON。配置缺失时会报告路径；补齐后可使用同一个包重试发布。之后仍会执行完整配置与签名校验。上传前，发布器校验全部留存文件的哈希、版本及目标信息，再复核平台签名。macOS 校验 DMG，并解压 ZIP 校验 app 票据；Windows 校验 Authenticode、配置的签名证书指纹及时间戳。准备阶段生成中文审批摘要，分别展示版本、通道、平台和环境，以及留存的 test release ID、安装包与升级 YAML 的完整 URL、原打包尝试链接、源码 ref/SHA、平台校验结果及拟创建的 tag。折叠详情包含 COS 存储桶，以及实际上传字节的大小和 SHA-256（包括改写后的 YAML）。公开仓库的摘要会公开测试前缀和下载 URL；前缀不提供访问鉴权。两种发布 job 均等待 **Review deployments → Approve and deploy**，随后重新核对已批准的 manifest 与上传计划摘要。文件或目标变化会被拒绝。审批不能修改版本；应拒绝并重新打包。两种环境都上传缺失文件、校验远端字节，再更新 YAML。此工作流没有只上传文件的模式。production 最后为记录的打包提交创建 `dshs-desktop-v<version>`；已有 tag 必须指向同一提交。
 
 <a id="rollout-and-website-publication"></a>
 

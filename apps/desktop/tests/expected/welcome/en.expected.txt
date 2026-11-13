@@ -1,6 +1,6 @@
-DeepSeek Harness
-DeepSeek Harness
-Welcome to DeepSeek Harness
-Build potential. Explore intelligence.
+DSH Special
+DSH Special
+Welcome to DSH Special
+Pentest edition for network engineering.
 Sign in
 Add API Key

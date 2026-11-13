@@ -180,7 +180,12 @@ it('leaves non-network GitHub errors to pnpm and forwards profile Git environmen
   expect(result.packageResult).toEqual(failure)
   expect(pnpm).toHaveBeenCalledOnce()
   expect(result.failedAt).toBeUndefined()
-  expect(connection).toHaveBeenCalledWith(expect.anything(), expect.anything(), expect.objectContaining({ timeoutMs: 8000, env }))
+  expect(connection).toHaveBeenCalledWith(
+    expect.anything(),
+    expect.anything(),
+    expect.objectContaining({ timeoutMs: 8000 }),
+  )
+  expect(connection.mock.calls[0]?.[2].env).toMatchObject(env)
   // A check failure pnpm may resolve streams no run of its own.
   expect(chunks.filter(chunk => chunk.argv[0] === 'git')).toEqual([])
 })
@@ -214,7 +219,12 @@ it('installs the spec the Git transport probe chooses with the profile Git envir
   const pnpm = vi.spyOn(operations, 'runProfilePnpm').mockResolvedValue({ exitCode: 1, output: 'stop', truncated: false, logPath: 'pnpm.log', kind: 'unknown' })
   onTestFinished(() => { transport.mockRestore(); pnpm.mockRestore() })
   expect((await manager.installBundle(spec)).application).toBe('failed')
-  expect(transport).toHaveBeenCalledWith(expect.objectContaining({ kind: 'git', spec }), dir, expect.objectContaining({ timeoutMs: 7000, env }))
+  expect(transport).toHaveBeenCalledWith(
+    expect.objectContaining({ kind: 'git', spec }),
+    dir,
+    expect.objectContaining({ timeoutMs: 7000 }),
+  )
+  expect(transport.mock.calls[0]?.[2].env).toMatchObject(env)
   expect(pnpm.mock.calls[0]?.[1]).toEqual(['add', 'git+ssh://git@git.example/team/sub/plugin.git#main'])
 })
 
@@ -1307,11 +1317,15 @@ it('reads what a spec names before installing it', async () => {
   expect(await manager.inspect('dsh-x')).toEqual({
     status: 'accepted', kind: 'registry', name: 'dsh-x', version: '1.4.2', description: 'A sidebar.', bundle: true, registry: null,
   })
-  expect(view).toHaveBeenCalledWith(dir, 'dsh-x', { command: 'pnpm-test', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, registry: null })
+  expect(view).toHaveBeenCalledWith(dir, 'dsh-x', expect.objectContaining({
+    command: 'pnpm-test', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, registry: null,
+  }))
   const signal = AbortSignal.abort()
   answers(JSON.stringify([{ name: 'dsh-lib', version: '1.0.0', dsh: { bundle: {} } }, { name: 'dsh-lib', version: '1.1.0', dsh: null }]))
   expect(await manager.inspect('dsh-lib@^1', undefined, signal)).toEqual({ status: 'refused', problem: 'not-a-bundle', reason: 'dsh-lib declares no dsh.bundle', registries: [null] })
-  expect(view).toHaveBeenLastCalledWith(dir, 'dsh-lib@^1', { command: 'pnpm-test', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, signal, registry: null })
+  expect(view).toHaveBeenLastCalledWith(dir, 'dsh-lib@^1', expect.objectContaining({
+    command: 'pnpm-test', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, signal, registry: null,
+  }))
   // An answer that names no package keeps the name the spec gave; colour escapes around the JSON are dropped.
   answers('\x1b[36m' + JSON.stringify({ version: '0.0.1', description: '', dsh: { bundle: { patch: './p.yml' } } }) + '\x1b[39m\n')
   expect(await manager.inspect('dsh-bare')).toEqual({ status: 'accepted', kind: 'registry', name: 'dsh-bare', version: '0.0.1', bundle: true, registry: null })
@@ -1546,8 +1560,10 @@ it('asks the registries in turn while one is unreachable or stale, and names the
   answers(manifest)
   expect(await manager.inspect('dsh-x')).toEqual({ status: 'accepted', kind: 'registry', name: 'dsh-x', version: '1.0.0', bundle: true, registry: MIRROR })
   expect(asked(0)).toEqual([null, MIRROR])
-  expect(read).toHaveBeenCalledWith(dir, { command: 'pnpm', timeoutMs: 1000 })
-  expect(view).toHaveBeenLastCalledWith(expect.any(String), 'dsh-x', { command: 'pnpm', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, registry: MIRROR })
+  expect(read).toHaveBeenCalledWith(dir, expect.objectContaining({ command: 'pnpm', timeoutMs: 1000 }))
+  expect(view).toHaveBeenLastCalledWith(expect.any(String), 'dsh-x', expect.objectContaining({
+    command: 'pnpm', fields: ['name', 'version', 'description', 'dsh'], timeoutMs: 1000, registry: MIRROR,
+  }))
   // pnpm prints a refusal as JSON on stdout with nothing on stderr: it is read the same way, and the reason is its message.
   view.mockResolvedValueOnce({ exitCode: 1, stdout: '{\n  "error": {\n    "code": "ERR_PNPM_META_FETCH_FAIL",\n    "message": "GET https://registry.npmjs.org/dsh-x: fetch failed"\n  }\n}\n', stderr: '', timedOut: false })
   answers(manifest)
@@ -2486,7 +2502,12 @@ it.each(['network', 'timeout'] as const)('keeps a Git copy when a %s stops reach
       error: { code: 'operation-error', diagnostic: 'fatal: unable to access' },
     },
   })
-  expect(gitConnection).toHaveBeenCalledWith(expect.objectContaining({ kind: 'git', spec: GIT_B }), dir, expect.objectContaining({ timeoutMs: 5000, env }))
+  expect(gitConnection).toHaveBeenCalledWith(
+    expect.objectContaining({ kind: 'git', spec: GIT_B }),
+    dir,
+    expect.objectContaining({ timeoutMs: 5000 }),
+  )
+  expect(gitConnection.mock.calls[0]?.[2].env).toMatchObject(env)
   expect(pnpm).not.toHaveBeenCalled()
   expect(readFileSync(join(dir, 'package.json'), 'utf8')).toBe(before)
 })

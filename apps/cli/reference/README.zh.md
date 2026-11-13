@@ -29,7 +29,7 @@ dsh rescue
 
 启动器自身的 flag 必须写在最前面，并在遇到第一个无法识别的 token 时结束；从该 token 开始的所有内容都会通过 `ctx.cmdlineArgs` 原样交给已启动的 profile，注入该 profile 的任意应用插件都可以解析这些内容（[`dsh-cmdline`](../../../packages/boot/cmdline/README.zh.md)）。因此，`dsh rescue --from-default-profile web --no-open` 会先重置 rescue，再把 `--no-open` 交给 Web；`dsh --profile web --port 8080` 会将 `--port` 交给 web 应用；`dsh --profile web --help` 只打印该应用的帮助信息，不启动应用；`dsh --help` 没有可供交付参数的 profile，因此会打印启动器自身的帮助信息。`-V`/`--version` 位于应用参数边界之前时，会打印启动器的版本。
 
-每套组合只会挂载一次。普通插件注入 `cmdlineArgs`，解析所属应用的参数，并将解析结果作为服务提供。每个从 flag 取值的配置行都会注入该服务；Loader 会等到服务激活后，再对该行的配置求值（`port: !!js ctx.webStartup.port ?? 3080`），因此 flag 的优先级高于配置行中写明的值。要维持这一优先级，配置行必须保留该表达式；如果用户 patch 用字面量替换整个 `config`，也会随之移除运行时读取。帮助参数和被拒绝的参数都会请求退出：参数被拒绝时以非零状态退出，显示帮助时以 0 退出；依赖该提供方服务的配置行不会激活。启用 HMR 时，编辑 patch 文件会根据仍在运行的服务重新计算表达式，因此不会重置当前正在使用的端口。
+每套组合只会挂载一次。普通插件注入 `cmdlineArgs`，解析所属应用的参数，并将解析结果作为服务提供。每个从 flag 取值的配置行都会注入该服务；Loader 会等到服务激活后，再对该行的配置求值（`port: !!js ctx.webStartup.port ?? 3180`），因此 flag 的优先级高于配置行中写明的值。要维持这一优先级，配置行必须保留该表达式；如果用户 patch 用字面量替换整个 `config`，也会随之移除运行时读取。帮助参数和被拒绝的参数都会请求退出：参数被拒绝时以非零状态退出，显示帮助时以 0 退出；依赖该提供方服务的配置行不会激活。启用 HMR 时，编辑 patch 文件会根据仍在运行的服务重新计算表达式，因此不会重置当前正在使用的端口。
 
 启动器的 flag 必须写在应用参数之前，且启动器的解析器会消耗掉一个 `--`：必须以字面量 `--` 送达应用的参数需要写成 `-- --`。`plugin` 仅在紧跟 `dsh` 时选择插件管理命令；选定 profile 后，`plugin` 和 `web` 都是普通应用参数。应用参数开始之前，重复指定 `--profile` 会被拒绝，包括简写后再指定 `--profile` 的情况。`ctx.cmdlineArgs.get()` 是共享的不可变读取：多个插件可以解析同一份快照，没有读取方的 profile 则会忽略自己的应用参数。
 
@@ -112,7 +112,7 @@ dsh --profile tui
 
 `--public-url <url>` 公告唯一的 HTTP(S) 应用根——可带转发前缀——替代监听器的绑定地址 URL（回环绑定时为回环地址）。它不授予信任，因此浏览器可见的 authority 仍需用 `--trusted-host` 点名；[在反向代理之后发布 Web UI](../../../docs/user/guide/public-deployments.zh.md)列出了前置代理必须提供的内容。
 
-`--tls-cert <file>` 与 `--tls-key <file>` 让监听器以 HTTPS 取代明文 HTTP 提供服务。它们属于同一个设置：要么都给，要么都不给；两者各是相对进程工作目录解析的路径。证书文件包含完整证书链（含中间证书），密钥文件为不带口令的 PEM 私钥。文件缺失、不可读、为空或无效时启动失败，且绝不回退到 HTTP；由于载体只读取一次文件，且既不获取、不续期也不监视证书，替换后的证书对只有在重新加载监听器或重启进程后才生效。HTTPS 同样不授予信任：浏览器必须信任该证书并访问其名称覆盖的 authority，Connection 仍认证每个请求并校验 Host/Origin，而由于接收请求的监听器提供 HTTPS，会话 cookie 带 `Secure`。默认端口仍为 3080，`--public-url` 仍是相互独立的公告。
+`--tls-cert <file>` 与 `--tls-key <file>` 让监听器以 HTTPS 取代明文 HTTP 提供服务。它们属于同一个设置：要么都给，要么都不给；两者各是相对进程工作目录解析的路径。证书文件包含完整证书链（含中间证书），密钥文件为不带口令的 PEM 私钥。文件缺失、不可读、为空或无效时启动失败，且绝不回退到 HTTP；由于载体只读取一次文件，且既不获取、不续期也不监视证书，替换后的证书对只有在重新加载监听器或重启进程后才生效。HTTPS 同样不授予信任：浏览器必须信任该证书并访问其名称覆盖的 authority，Connection 仍认证每个请求并校验 Host/Origin，而由于接收请求的监听器提供 HTTPS，会话 cookie 带 `Secure`。默认端口仍为 3180，`--public-url` 仍是相互独立的公告。
 
 ```sh
 dsh web
@@ -124,7 +124,7 @@ dsh web --dump-config
 dsh web --help
 ```
 
-生产 Web 运行器需要已构建的包和前端产物（`pnpm run build`）。配置了 `--public-url` 时打印公告地址，否则打印采用监听器协议的绑定地址 URL（默认为 `http://127.0.0.1:3080`，配置 TLS 时为 `https://`）。Host/Origin 栅栏直接接受绑定 IP；代理或 DNS authority 仍需 `--trusted-host`。启动日志与默认浏览器交接都会等待完整 Loader 配置树结算。继承的 `SSH_CONNECTION` 或 `SSH_TTY` 非空时会抑制浏览器打开，但仍打印启动 URL。浏览器交接前会打印 `dsh web: opening the default browser; pass --no-open to disable`；若操作系统交接失败，stderr 会说明原因并指向启动 URL，服务器仍继续运行。
+生产 Web 运行器需要已构建的包和前端产物（`pnpm run build`）。配置了 `--public-url` 时打印公告地址，否则打印采用监听器协议的绑定地址 URL（默认为 `http://127.0.0.1:3180`，配置 TLS 时为 `https://`）。Host/Origin 栅栏直接接受绑定 IP；代理或 DNS authority 仍需 `--trusted-host`。启动日志与默认浏览器交接都会等待完整 Loader 配置树结算。继承的 `SSH_CONNECTION` 或 `SSH_TTY` 非空时会抑制浏览器打开，但仍打印启动 URL。浏览器交接前会打印 `dshs web: opening the default browser; pass --no-open to disable`；若操作系统交接失败，stderr 会说明原因并指向启动 URL，服务器仍继续运行。
 
 进程关闭时，插件树最多有 5 秒完成 dispose。首次收到 `SIGINT` 或 `SIGTERM` 时会开始优雅排空：`SIGTERM` 是监督进程发出的常规停止请求，在所有运行模式下都以 0 退出；`SIGINT` 则报告 130。第二次收到信号时会立即强制退出。如果一次性运行在正常结束时已经卡在 dispose 阶段，第一次按下 `Ctrl+C` 就会直接升级为强制退出，而不会被忽略。
 

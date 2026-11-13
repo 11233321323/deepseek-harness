@@ -55,11 +55,11 @@ async function bootComposition(web: Record<string, unknown>, environment: Record
   vi.stubGlobal('fetch', fetchMock)
   const root = await mkdtemp(join(tmpdir(), 'dsh-web-deepseek-api-composition-'))
   cleanups.push(async () => { await rm(root, { recursive: true, force: true }) })
-  const previousHome = process.env.DSH_HOME
-  process.env.DSH_HOME = root
+  const previousHome = process.env.DSHS_HOME
+  process.env.DSHS_HOME = root
   cleanups.push(async () => {
-    if (previousHome === undefined) Reflect.deleteProperty(process.env, 'DSH_HOME')
-    else process.env.DSH_HOME = previousHome
+    if (previousHome === undefined) Reflect.deleteProperty(process.env, 'DSHS_HOME')
+    else process.env.DSHS_HOME = previousHome
   })
   const configPath = join(root, 'cordis.yml')
   await writeFile(configPath, JSON.stringify([

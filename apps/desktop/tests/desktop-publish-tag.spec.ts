@@ -17,7 +17,7 @@ function transport(replies: Array<{ status: number; body?: object; rawBody?: str
 it('tags the packaged commit using explicit App authentication', async () => {
   const http = transport([{ status: 404 }, { status: 201, body: tag() }])
   await expect(publishDesktopTag('owner/repo', '1.2.3', commit, 'fixture-token', http.request)).resolves.toBe('created')
-  expect(http.calls[1]?.init?.body).toBe(JSON.stringify({ ref: 'refs/tags/desktop-v1.2.3', sha: commit }))
+  expect(http.calls[1]?.init?.body).toBe(JSON.stringify({ ref: 'refs/tags/dshs-desktop-v1.2.3', sha: commit }))
   expect(http.calls[1]?.init?.headers).toMatchObject({ Authorization: 'Bearer fixture-token' })
 })
 
@@ -61,7 +61,7 @@ it('explains an existing annotated tag without replacing it', async () => {
 it('keeps the creation status and safe rule diagnostic when no competing tag exists', async () => {
   const http = transport([{ status: 404 }, { status: 422,
     headers: { 'x-github-request-id': 'ABCD:1234' },
-    body: { message: 'Repository rule violations found for refs/tags/desktop-v1.2.3', errors: ['secret-value'] } }, { status: 404 }])
+    body: { message: 'Repository rule violations found for refs/tags/dshs-desktop-v1.2.3', errors: ['secret-value'] } }, { status: 404 }])
   const failure = publishDesktopTag('owner/repo', '1.2.3', commit, 'fixture-token', http.request)
   await expect(failure).rejects.toThrow('creation failed (HTTP 422; GitHub request ABCD:1234); follow-up tag lookup returned HTTP 404; repository rules rejected')
   await expect(failure).rejects.not.toThrow('secret-value')

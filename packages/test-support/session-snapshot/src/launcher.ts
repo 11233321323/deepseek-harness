@@ -129,8 +129,8 @@ export function launchAcpTestAgent(options: AcpTestLaunchOptions): LaunchedAcpTe
     ...agent.profile === undefined ? {} : { sourceImport: 'tsx/esm' },
     env: {
       ...options.env,
-      DSH_HOME: join(cwd, '.dsh'),
-      DSH_AGENTS_HOME: join(cwd, '.agents'),
+      DSHS_HOME: join(cwd, '.dsh'),
+      DSHS_AGENTS_HOME: join(cwd, '.agents'),
     },
   })
   const child = spawn(

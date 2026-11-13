@@ -26,7 +26,7 @@ import {
   type IpcMainInvokeEvent,
   type MenuItemConstructorOptions,
 } from 'electron'
-import { resolveDesktopPaths } from './paths.ts'
+import { resolveDesktopPaths, resolveDesktopUserData } from './paths.ts'
 import { DesktopProjectManager } from './project-manager.ts'
 import { DesktopHostFatalError, DesktopHostProcess, DesktopHostUncleanExitError } from './host-process.ts'
 import { DesktopPlatformView, PLATFORM_IPC, platformBounds } from './platform-view.ts'
@@ -72,6 +72,14 @@ import { DesktopQuitConfirmation } from './quit-confirmation.ts'
 import { DesktopTray } from './tray.ts'
 import { DesktopBackgroundNotice } from './background-notice.ts'
 
+// Isolate Electron's single-instance lock and every browser, settings, cache, and log root
+// from an official DeepSeek Harness install.
+const desktopUserData = resolveDesktopUserData(app.getPath('appData'))
+app.setName('dshs')
+app.setPath('userData', desktopUserData)
+app.setPath('sessionData', desktopUserData)
+app.setPath('crashDumps', join(desktopUserData, 'crash-dumps'))
+
 let focusPrimaryWindow = (): void => {}
 let stopForRecovery = async (): Promise<void> => { await stopOperationReports() }
 let shuttingDown = false
@@ -90,9 +98,8 @@ let backendReady = false
 /** Error-level console output of the primary window, attached to crash reports. */
 const rendererConsole = new RendererConsoleTail()
 
-// Platform-conventional logs directory (macOS ~/Library/Logs/<name>, otherwise under userData);
-// set before ready so the first fatal report already resolves under it.
-app.setAppLogsPath()
+// Set before ready so the first fatal report already resolves under the edition-owned userData.
+app.setAppLogsPath(join(desktopUserData, 'logs'))
 
 function currentDesktopLocale(): ReturnType<typeof resolveDesktopLocale> {
   return resolveDesktopLocale(windowsLanguage ?? app.getLocale())
@@ -473,7 +480,7 @@ async function main(): Promise<void> {
   // chrome and its content never mix languages.
   const showAbout = async (): Promise<void> => {
     await ordinaryMessageBox({ type: 'info', title: locale.messages.aboutMenu, message: locale.messages.aboutProduct,
-      detail: formatDesktopMessage(locale.messages.aboutVersion, { version: app.getVersion() }),
+      detail: `${locale.messages.welcomeDescription}\n\n${formatDesktopMessage(locale.messages.aboutVersion, { version: app.getVersion() })}`,
       buttons: [locale.messages.updateAcknowledge], cancelId: 0 })
   }
   const commandManager = new DesktopCommandManager({
@@ -1158,10 +1165,11 @@ async function main(): Promise<void> {
   const applicationIconPath = development ? join(app.getAppPath(), 'resources', 'icon-windows.png')
     : join(process.resourcesPath, 'icon.png')
   app.setAboutPanelOptions({
-    applicationName: 'DeepSeek Harness',
+    applicationName: 'DSH Special',
     applicationVersion: app.getVersion(),
     // The release has no separate build number; omit Electron's bundle version.
     version: '',
+    credits: locale.messages.welcomeDescription,
     copyright: '',
     iconPath: applicationIconPath,
   })
@@ -1485,10 +1493,10 @@ async function main(): Promise<void> {
     window.focus()
   }
 
-  if (app.isPackaged || process.env.DSH_DESKTOP_DEV_APP === '1') app.setAsDefaultProtocolClient('dsh')
+  if (app.isPackaged || process.env.DSH_DESKTOP_DEV_APP === '1') app.setAsDefaultProtocolClient('dshs')
   app.on('open-url', (event, url) => {
     event.preventDefault()
-    if (url === 'dsh://open' || url === 'dsh://open/') focusPrimaryWindow()
+    if (url === 'dshs://open' || url === 'dshs://open/') focusPrimaryWindow()
   })
 
   app.on('activate', (_event, hasVisibleWindows) => {

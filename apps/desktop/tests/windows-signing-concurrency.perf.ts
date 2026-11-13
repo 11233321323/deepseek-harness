@@ -85,7 +85,7 @@ export async function runWindowsSigningConcurrencyExperiment(args = process.argv
   let success = false
   try {
     await withWindowsSigningStage({ stage: 'operator-signing-concurrency', signal: controller.signal, record }, async () => {
-      if (existsSync(join(homedir(), '.dsh-desktop-signing', 'attempt.json'))) {
+      if (existsSync(join(homedir(), '.dshs-desktop-signing', 'attempt.json'))) {
         throw new Error('Retained signing interlock requires operator inspection; experiment refused')
       }
       const identity = await inspectWindowsTokenIdentity({ certificate, container: keyContainer, environment: safeEnvironment })

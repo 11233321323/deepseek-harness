@@ -4,6 +4,7 @@ vi.mock('../src/web-document.ts', () => ({
 /** Welcome startup uses the Host before transitioning to the workspace. */
 
 import { afterEach, expect, it, vi } from 'vitest'
+import { join } from 'node:path'
 import type { BrowserWindowConstructorOptions } from 'electron'
 import type { DesktopLocale } from '../src/locale.ts'
 import type { AccountView } from '@deepseek-ai/dsh-deepseek-account/types'
@@ -62,6 +63,8 @@ vi.mock('electron', () => ({
     setAboutPanelOptions: vi.fn(),
     getAppPath: () => '/development-app',
     getPath: (name: string) => name === 'userData' ? '/desktop-user-data' : `/development-${name}`,
+    setName: vi.fn(),
+    setPath: vi.fn(),
     setAppLogsPath: vi.fn(),
     getPreferredSystemLanguages: () => ['en-US'],
     on: (name: string, callback: (...args: unknown[]) => void) => { state.appListeners.set(name, callback) },
@@ -105,7 +108,10 @@ vi.mock('electron', () => ({
 // The Windows tray relabels through Menu as well; keep the menu call counts below platform-neutral.
 vi.mock('../src/tray.ts', () => ({ DesktopTray: class { relabel() {} dispose() {} } }))
 
-vi.mock('../src/paths.ts', () => ({ resolveDesktopPaths: () => ({ profile: '/profile' }) }))
+vi.mock('../src/paths.ts', () => ({
+  resolveDesktopPaths: () => ({ profile: '/profile' }),
+  resolveDesktopUserData: (appData: string) => join(appData, 'dshs'),
+}))
 vi.mock('../src/settings.ts', () => ({ readDesktopSettings: () => ({ updates: { allowTestAuthPopupWindow: false } }) }))
 vi.mock('../src/login-shell-environment.ts', async importOriginal => ({
   ...await importOriginal<typeof import('../src/login-shell-environment.ts')>(),
@@ -207,7 +213,7 @@ it.each([false, true])('starts welcome onboarding without carrying update focus 
   })
   const activate = () => {
     state.appListeners.get('second-instance')!()
-    state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'dsh://open')
+    state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'dshs://open')
   }
   await import('../src/main.ts')
   await vi.waitFor(() => { expect(state.beforeRead).toHaveBeenCalledOnce() })
@@ -305,7 +311,7 @@ it.each([false, true])('starts welcome onboarding without carrying update focus 
   expect(state.focusWorkspace).not.toHaveBeenCalled()
   expect(state.moveTopWorkspace).not.toHaveBeenCalled()
   expect(state.openDevTools).not.toHaveBeenCalled()
-  state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'dsh://open')
+  state.appListeners.get('open-url')!({ preventDefault: vi.fn() }, 'dshs://open')
   expect(state.showWorkspace).toHaveBeenCalledOnce()
   expect(state.focusWorkspace).toHaveBeenCalledOnce()
 

@@ -28,6 +28,7 @@ import {
 import { OPTIONAL_BUNDLES, OFFICIAL_ON_DEMAND_CATALOG, PROTECTED_PLUGINS } from '@deepseek-ai/dsh-official-bundles'
 import type {} from '@deepseek-ai/dsh-hmr'
 import type { ProfileContext, ProfileManifest } from '@deepseek-ai/dsh-app-boot'
+import { pnpmEnvironment } from '@deepseek-ai/dsh-home-paths'
 import { bundleManifest, readProfileRegistry, registryArguments, runProfilePnpm, saveManifest, viewProfilePackage } from './operations.ts'
 import { classifyInstallFailure } from './install-failure.ts'
 import { officialBundleInstallTarget } from './official-install-target.ts'
@@ -400,6 +401,14 @@ export class PluginManager extends TypertRemoteService {
     })
   }
 
+  private packageInvocation(): { command: string; args: readonly string[]; env: Readonly<Record<string, string>> } {
+    return {
+      command: this.profile.packageManager?.command ?? this.pnpmCommand,
+      args: this.profile.packageManager?.args ?? [],
+      env: pnpmEnvironment(this.profile.home, this.profile.packageManager?.env),
+    }
+  }
+
   /**
    * Read a bundle's long description: the Markdown file its locale `meta.detail` names in `language`, otherwise its
    * README. An installed bundle is read from its directory without network access; an official bundle the installation
@@ -605,7 +614,7 @@ export class PluginManager extends TypertRemoteService {
     return {
       ...this.configuredRegistries, fallbackRegistries: [...this.configuredRegistries.fallbackRegistries],
       resolved: await readProfileRegistry(this.profile.dir, {
-        ...this.profile.packageManager ?? { command: this.pnpmCommand }, timeoutMs: this.inspectTimeoutMs,
+        ...this.packageInvocation(), timeoutMs: this.inspectTimeoutMs,
       }),
     }
   }
@@ -828,7 +837,7 @@ export class PluginManager extends TypertRemoteService {
     const parsed = parseInstallSpec(spec)
     /* v8 ignore next -- planGitUpdate accepts only a pinned Git spec */
     if (parsed.kind !== 'git') return undefined
-    const env = this.profile.packageManager?.env === undefined ? {} : { env: this.profile.packageManager.env }
+    const env = { env: this.packageInvocation().env }
     const check = checkGitConnection(parsed, this.profile.dir, {
       timeoutMs: this.githubConnectionTimeoutMs, outputBytes: this.outputBytes, signal: this.abort.signal, ...env,
     })
@@ -892,7 +901,7 @@ export class PluginManager extends TypertRemoteService {
     const attempts: RegistryAttempt[] = []
     for (const [index, registry] of plan.entries()) {
       const view = await viewProfilePackage(this.profile.dir, spec, {
-        ...this.profile.packageManager ?? { command: this.pnpmCommand },
+        ...this.packageInvocation(),
         fields, timeoutMs: this.inspectTimeoutMs, ...signal === undefined ? {} : { signal }, registry,
       })
       const printed = view.stdout.replace(ANSI_SEQUENCE, '').trim()
@@ -994,7 +1003,7 @@ export class PluginManager extends TypertRemoteService {
         result.registries = []
         const parsed = parsedForRegistry(spec)
         const signal = AbortSignal.any([this.abort.signal, control.abort.signal])
-        const env = this.profile.packageManager?.env === undefined ? {} : { env: this.profile.packageManager.env }
+        const env = { env: this.packageInvocation().env }
         const connection = checkGithubConnection(parsed, this.profile.dir, {
           timeoutMs: this.githubConnectionTimeoutMs, outputBytes: this.outputBytes, signal, ...env,
         })
@@ -1221,7 +1230,7 @@ export class PluginManager extends TypertRemoteService {
     const cwd = this.profile.dir
     const identity = requestId === undefined ? {} : { requestId }
     const task = runProfilePnpm({ ...this.profile, profile: this.profile.name }, args, {
-      execution: 'service', ...this.profile.packageManager ?? { command: this.pnpmCommand },
+      execution: 'service', ...this.packageInvocation(),
       signal: signal === undefined ? this.abort.signal : AbortSignal.any([this.abort.signal, signal]),
       outputBytes: this.outputBytes, activateNewBundles: false, idleTimeoutMs: this.idleTimeoutMs,
       lookupTimeoutMs: this.inspectTimeoutMs, ...expected === undefined ? {} : { expected },

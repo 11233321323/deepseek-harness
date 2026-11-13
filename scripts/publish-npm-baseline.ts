@@ -56,7 +56,7 @@ while time.monotonic() < deadline:
             output.extend(chunk)
 
     snapshot = bytes(output)
-    if not termination_sent and b"dsh web: http://127.0.0.1:" in snapshot:
+    if not termination_sent and b"dshs web: http://127.0.0.1:" in snapshot:
         ready_seen = True
         os.kill(pid, signal.SIGTERM)
         termination_sent = True
@@ -899,8 +899,8 @@ function installedArtifactEnvironment(consumerRoot: string): NodeJS.ProcessEnv {
   const environment = npmClientEnvironment()
   delete environment.NODE_OPTIONS
   delete environment.NODE_PATH
-  environment.DSH_HOME = resolve(consumerRoot, '.dsh')
-  environment.DSH_AGENTS_HOME = resolve(consumerRoot, '.agents')
+  environment.DSHS_HOME = resolve(consumerRoot, '.dsh')
+  environment.DSHS_AGENTS_HOME = resolve(consumerRoot, '.agents')
   environment.DSH_TELEMETRY_DISABLED = '1'
   environment.DEEPSEEK_API_KEY = 'keyless-installed-web-no-call'
   environment.LANG = 'en_US.UTF-8'

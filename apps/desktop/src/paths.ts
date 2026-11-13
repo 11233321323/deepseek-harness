@@ -3,6 +3,15 @@
 import { join } from 'node:path'
 import { resolveDshHome } from '@deepseek-ai/dsh-home-paths'
 
+/**
+ * Resolve Electron's edition-owned data root.
+ * @param appData - Electron's operating-system application-data directory.
+ * @returns The root containing all Electron browser and shell state for this edition.
+ */
+export function resolveDesktopUserData(appData: string): string {
+  return join(appData, 'dshs')
+}
+
 /** Stable desktop installation paths under the shared Harness home. */
 export interface DesktopPaths {
   readonly profile: string

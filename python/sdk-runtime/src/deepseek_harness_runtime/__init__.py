@@ -1,4 +1,4 @@
-"""Locate and execute the bundled dsh CLI shipped with the Python SDK runtime.
+"""Locate and execute the bundled dshs CLI shipped with the Python SDK runtime.
 
 Two runtime carriers coexist under ``runtime/``, both injected by the repo's
 ``scripts/build-exe-for-python-sdk.ts`` build (neither is checked into git):
@@ -14,9 +14,9 @@ Two runtime carriers coexist under ``runtime/``, both injected by the repo's
   system Node >= 24.9. It is the current checkout's source build, never
   selected automatically, and excluded from wheel/sdist distributions.
 
-Both carriers execute the same dsh command grammar. The Python SDK selects the
-``sdk`` profile and requires an explicit Harness home; the installed ``dsh``
-console command requires ``DSH_HOME`` for the same reason.
+Both carriers execute the same dshs command grammar. The Python SDK selects the
+``sdk`` profile and requires an explicit Harness home; the installed ``dshs``
+console command requires ``DSHS_HOME`` for the same reason.
 """
 
 from __future__ import annotations
@@ -194,11 +194,11 @@ def resolve_office_launch_args() -> tuple[str, str]:
 
 
 def main() -> None:
-    """Launch the CLI with explicit DSH_HOME; wait on Windows, replace the process on POSIX."""
-    if not os.environ.get("DSH_HOME", "").strip():
+    """Launch the CLI with explicit DSHS_HOME; wait on Windows, replace the process on POSIX."""
+    if not os.environ.get("DSHS_HOME", "").strip():
         print(
-            "dsh: the Python runtime command requires an explicit DSH_HOME; "
-            "it never uses ~/.dsh implicitly",
+            "dshs: the Python runtime command requires an explicit DSHS_HOME; "
+            "it never uses ~/.dshs implicitly",
             file=sys.stderr,
         )
         raise SystemExit(2)

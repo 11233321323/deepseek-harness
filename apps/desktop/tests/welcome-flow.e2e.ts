@@ -75,7 +75,7 @@ async function mockPlatform() {
 
 describe.skipIf(!existsSync(builtHost))('built Desktop welcome flow', () => {
   it('persists explicit API keys and browser account login independently across Host restarts', async () => {
-    const root = mkdtempSync(join(tmpdir(), 'dsh-desktop-welcome-'))
+    const root = mkdtempSync(join(tmpdir(), 'dshs-desktop-welcome-'))
     let host: DesktopHostProcess | undefined
     const platform = await mockPlatform()
     try {

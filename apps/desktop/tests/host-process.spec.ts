@@ -68,7 +68,7 @@ process.on('message', message => {
 `
 
 function projectWithHost(source = HTTP_HOST): string {
-  const project = mkdtempSync(join(tmpdir(), 'dsh-desktop-host-test-'))
+  const project = mkdtempSync(join(tmpdir(), 'dshs-desktop-host-test-'))
   roots.push(project)
   const packageRoot = join(project, 'node_modules', '@deepseek-ai', 'dsh-desktop-host')
   mkdirSync(join(packageRoot, 'lib'), { recursive: true })
